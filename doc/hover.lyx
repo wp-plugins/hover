@@ -1,0 +1,954 @@
+#LyX 1.4.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass scrartcl
+\language english
+\inputencoding auto
+\fontscheme helvet
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\bullet 0 2 5 -1
+\bullet 1 0 8 -1
+\bullet 2 0 8 -1
+\bullet 3 0 8 -1
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Hover v0.6.0
+\end_layout
+
+\begin_layout Author
+Stefan Völkel <bd@bc-bd.org>
+\end_layout
+
+\begin_layout Date
+\begin_inset ERT
+status open
+
+\begin_layout Standard
+
+
+\backslash
+today
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset LatexCommand \tableofcontents{}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Status of this document
+\end_layout
+
+\begin_layout Standard
+Since software development is a highly dynamic process, documentation tends
+ to be a bit outdated.
+ This document will be no exception from this rule.
+\end_layout
+
+\begin_layout Standard
+Right now this document is written for Hover version 0.6.0.
+\end_layout
+
+\begin_layout Subsection
+Formatting of this document
+\end_layout
+
+\begin_layout Standard
+Something you need run on a shell:
+\end_layout
+
+\begin_layout Quotation
+$ echo foo
+\end_layout
+
+\begin_layout Standard
+Something that refers to the code of Hover
+\end_layout
+
+\begin_layout Quotation
+
+\emph on
+sv_hover_install
+\end_layout
+
+\begin_layout Subsection
+Features
+\end_layout
+
+\begin_layout Enumerate
+Keyword replacing
+\newline
+Define your own words to be replaced by links or acronyms.
+\end_layout
+
+\begin_layout Enumerate
+Popup
+\newline
+Mouse over CSS Style Popups can display additional information.
+\end_layout
+
+\begin_layout Enumerate
+Fading
+\newline
+Popups can be faded in / out / both or not at all.
+\end_layout
+
+\begin_layout Enumerate
+Title replacing
+\newline
+Replace title attributes from arbitary HTML tags with Popups.
+\end_layout
+
+\begin_layout Enumerate
+Websnapr integration
+\newline
+Provide your visitors with a small screenshot to a website
+ you are linking to.
+\end_layout
+
+\begin_layout Enumerate
+dynamic Interface
+\newline
+Modify the Admin Interface to fit easily on your screen
+ without the need of horizontal scroling.
+\end_layout
+
+\begin_layout Enumerate
+Selfcontained but flexible
+\newline
+All needed JavaScript (domTT and behaviour.js),
+ image and CSS files are included in the archive but can be reconfigured
+ or overridden.
+\end_layout
+
+\begin_layout Subsection
+Requirements
+\end_layout
+
+\begin_layout Subsubsection
+Wordpress 2
+\end_layout
+
+\begin_layout Standard
+Hover is a plugin for Wordpress 2 and has been successfully tested with
+ these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7 and 2.1.0.
+\end_layout
+
+\begin_layout Subsubsection
+Javascript
+\begin_inset LatexCommand \label{Requirements:Javascript}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Some of the features provided by this plugin rely heavily on javascript.
+ It is possible to deactivate the usage of Javascript with the downside
+ of losing these features:
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Popup
+\series default
+:
+\newline
+without javascript title attributes will be generated.
+ This leads to a browser based popup on mouseover.
+ The downside is, that you are no longer able to define the popups layout.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Title
+\series default
+:
+\newline
+Replacement of title attributes from arbitary HTML tags is performed through
+ javascript.
+ This script is executed within the browser which enables users who turned
+ of javascript to at least see the browser based popups.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Websnapr
+\series default
+:
+\newline
+this service can only be used with the javascript based popups.
+\end_layout
+
+\begin_layout Standard
+All needed javascript files are included (domTT and behaviour.js).
+\end_layout
+
+\begin_layout Subsubsection
+Database
+\end_layout
+
+\begin_layout Standard
+Hover will store it's data in a seperate table in your database thus you
+ need the privilege to create tables in your database.
+\end_layout
+
+\begin_layout Standard
+If you lack the required privilege you may need to ask your database administrat
+or to either grant it to you or create the table for you.
+ The code to create the table can be found in the method called 
+\emph on
+sv_hover_install.
+\end_layout
+
+\begin_layout Standard
+Please be advised that upon upgrade there may be additional code that has
+ to be executed.
+\end_layout
+
+\begin_layout Subsection
+Download
+\end_layout
+
+\begin_layout Standard
+Hover is available at these URLs:
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+freshmeat.net:
+\series default
+ 
+\begin_inset LatexCommand \url{http://freshmeat.net/projects/hover/}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+blog:
+\series default
+ 
+\begin_inset LatexCommand \url{http://bc-bd.org/}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+wp-plugins.net:
+\series default
+ 
+\begin_inset LatexCommand \url{http://wp-plugins.net/plugin/hover/#plugin_2211}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+wordpress.softplug.net:
+\series default
+ 
+\begin_inset LatexCommand \url{http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231/Itemid,40/}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Installation
+\begin_inset LatexCommand \label{sub:Installation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Extract the archive to your plugins directory and activate it.
+ Hover is selfcontained and provides all needed javascript, image and CSS
+ files to work in a default setup.
+\end_layout
+
+\begin_layout Standard
+Some of the paths used in this example may vary from your installation.
+ Please make sure to use appropriate values.
+\end_layout
+
+\begin_layout Standard
+Change to the plugin directory:
+\end_layout
+
+\begin_layout Quotation
+$ cd /usr/share/wordpress/wp-content/plugins
+\end_layout
+
+\begin_layout Standard
+Extract Plugin:
+\end_layout
+
+\begin_layout Quotation
+$ tar -xvzf /tmp/hover-0.6.0.tar.gz
+\end_layout
+
+\begin_layout Standard
+Rename folder:
+\end_layout
+
+\begin_layout Quotation
+$ mv hover-0.6.0 hover
+\end_layout
+
+\begin_layout Standard
+Login as admin to your Wordpress instance and activate the plugin.
+\end_layout
+
+\begin_layout Standard
+Please refer to 
+\begin_inset LatexCommand \ref{sub:Admin-Interface}
+
+\end_inset
+
+ on where to find the Hover Administarive Interface after activation.
+\end_layout
+
+\begin_layout Subsection
+Upgrade
+\begin_inset LatexCommand \label{sub:Upgrade}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When upgrading from a former realease install as described 
+\begin_inset LatexCommand \eqref{sub:Installation}
+
+\end_inset
+
+.
+ Be sure to deactivate and reactivate the plugin after that to perform any
+ needed database schema upgrades.
+\end_layout
+
+\begin_layout Subsection
+Removal
+\end_layout
+
+\begin_layout Standard
+To completely remove Hover from your system you need to follow the steps
+ below.
+\end_layout
+
+\begin_layout Standard
+The safest way is to simply deactivate the plugin (Step 1).
+ If you are desperadly in need of space and know what you are doing you
+ can remove the folder containg all of hovers files (Step 2).
+\end_layout
+
+\begin_layout Standard
+Steps 3 and 4 should only be performed by experienced users.
+ You have been warned.
+ Really.
+\end_layout
+
+\begin_layout Enumerate
+Deactivate Plugin.
+\end_layout
+
+\begin_layout Enumerate
+Remove Hover folder from your plugins directory.
+\end_layout
+
+\begin_layout Enumerate
+Drop Hover table (default wp_hover).
+\end_layout
+
+\begin_layout Enumerate
+Delete Hover options from wp_options table (all options are starting with
+ the string 
+\begin_inset Quotes eld
+\end_inset
+
+SV_HOVER_
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+Consider writing a short feedback eMail on why you did not want to use Hover
+ see 
+\begin_inset LatexCommand \ref{sub:Feedback}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Feedback 
+\begin_inset LatexCommand \label{sub:Feedback}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Feedback, postive or negative, is always welcome.
+ Please consider sending a short eMail to
+\end_layout
+
+\begin_layout Quotation
+bd@bc-bd.org
+\end_layout
+
+\begin_layout Standard
+Thanks.
+\end_layout
+
+\begin_layout Subsection
+Quickstart
+\end_layout
+
+\begin_layout Enumerate
+Install 
+\begin_inset LatexCommand \eqref{sub:Installation}
+
+\end_inset
+
+ or upgrade 
+\begin_inset LatexCommand \eqref{sub:Upgrade}
+
+\end_inset
+
+ plugin.
+\end_layout
+
+\begin_layout Enumerate
+Access Admin interface 
+\begin_inset LatexCommand \eqref{sub:Admin-Interface}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Create Hover 
+\begin_inset LatexCommand \eqref{sub:Examples}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Features
+\end_layout
+
+\begin_layout Subsection
+Admin Interface 
+\begin_inset LatexCommand \label{sub:Admin-Interface}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hover is configured using the admin interface which can be found below 
+\emph on
+Plugins / Hover
+\emph default
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/admin.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Due to the nature and size of its interface Hover comes with an extra line
+ of options integrated into the plugin menu which enables you to quickly
+ find the option you are looking for:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/menu.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The most important part of the interface is the 
+\emph on
+Hovers
+\emph default
+ section which is where you can define the keywords Hover should replace:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/hover.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each item has 4 attributes, 
+\color red
+Type
+\color none
+, 
+\color green
+Search
+\color none
+, 
+\color yellow
+Link
+\color none
+ and 
+\color blue
+Popup
+\color none
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/hover2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Type
+\series default
+:
+\newline
+There are three types available:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\series bold
+abbr
+\series default
+:
+\newline
+The keyword will be placed in <abbr> tags.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+acronym
+\series default
+:
+\newline
+The keyword will be placed in <acronym> tags.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+link
+\series default
+:
+\newline
+The keyword will be placed in <a> tags.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\series bold
+Search
+\series default
+:
+\newline
+The keyword to search for
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Link
+\series default
+:
+\newline
+The URL to link to
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Popup
+\series default
+:
+\newline
+Content of the popup to show on MouseOver.
+\end_layout
+
+\begin_layout Subsection
+Examples:
+\begin_inset LatexCommand \label{sub:Examples}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Link
+\end_layout
+
+\begin_layout Standard
+First create a new Hover with these values:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/example.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As the second step we create a posting and publish it:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/example3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which will result in this popup:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/example4.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Acronym
+\end_layout
+
+\begin_layout Standard
+First we create a new Hover:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/example_acronym.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next add the acronym to the previously created Posting:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/example_acronym2.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which will result in this popup:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/example_acronym3.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Conditional replacing
+\end_layout
+
+\begin_layout Standard
+Embed your Keyword in colons to enable contional replacment.
+\end_layout
+
+\begin_layout Standard
+Define a Hover by using 
+\series bold
+:foo:
+\series default
+ in the search field.
+ When writing 
+\series bold
+foo
+\series default
+ in an article it will not be replaced but when using 
+\series bold
+:foo:
+\series default
+ in a post it will be.
+ The colons will be removed.
+\end_layout
+
+\begin_layout Subsection
+Fade
+\end_layout
+
+\begin_layout Standard
+Hover supports all fading options provided by domTT.
+ All options defined here will be passed through to domTT, so please refer
+ to the domTT 
+\begin_inset LatexCommand \url[webpage]{http://www.mojavelinux.com/cooker/demos/domTT/}
+
+\end_inset
+
+ for examples.
+\end_layout
+
+\begin_layout Subsection
+Interface
+\end_layout
+
+\begin_layout Standard
+With the help of these settings you can define the size of each textarea
+ in the Admin Interface.
+ This enables users with a screen resolution of 800x600 and those with 1280x1024
+ or more to effectivly use the plugin.
+\end_layout
+
+\begin_layout Subsection
+Paths
+\end_layout
+
+\begin_layout Standard
+In case you have your own version of domTT or behaviour.js already on your
+ system, or you want to include a defferent version of these scripts you
+ can redefine where Hover should look for them.
+\end_layout
+
+\begin_layout Standard
+Please be advised that wrong settings will result in a non working plugin.
+ Refer to the Q&A section on the Admin Interface on how to reset these values.
+\end_layout
+
+\begin_layout Subsection
+Switches
+\end_layout
+
+\begin_layout Standard
+This section combines all switches that can only be turned on or off
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Use internal css
+\series default
+:
+\newline
+Hover comes with a file containing default CSS definitions needed to display
+ Hovers correctly.
+ You can disable the internal file and provide your own definitions to adapt
+ this plugin to your Look&Feel.
+ Please refer to the file hover.css which provides the default CSS definitions
+ and contains documentation on each needed class.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Use javascript
+\series default
+:
+\newline
+Turn off the usage of Javascript alltogether.
+ This will disable some features of Hover (see 
+\begin_inset LatexCommand \ref{Requirements:Javascript}
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Move to Plugins:
+\series default
+
+\newline
+This will move the configuration page from Options/Hover to Plugins/Hover
+ which will allow editors to alter these options too.
+\end_layout
+
+\begin_layout Subsection
+Titles
+\end_layout
+
+\begin_layout Standard
+Hover posseses the ability to replace title attributes in arbitary HTML
+ tags through its own popups.
+\end_layout
+
+\begin_layout Standard
+This feature is commonly used with <img> tags:
+\end_layout
+
+\begin_layout Itemize
+...
+ when disabled the browser will take care of displaing a small popup containig
+ the contents of the title attribute when moving the mouse over the image.
+\end_layout
+
+\begin_layout Itemize
+...
+ through enabling this switch Hover will replace those browser based popups
+ with its own, granting the same look and feel on all popups.
+\end_layout
+
+\begin_layout Subsection
+Websnapr
+\end_layout
+
+\begin_layout Standard
+Websnapr is a service which allows you to inlcude screenshots to the site
+ you are linking to:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/websnapr.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hover includes a small spinner displayed while loading the screenshot:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/spinner.png
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
