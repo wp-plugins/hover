@@ -2,16 +2,17 @@
 /*
 Plugin Name: Hover
 Plugin URI: http://bc-bd.org/blog/?page_id=48
-Description: Replaces keywords with links and optional onmouseover() popups
+Description: Replaces keywords with links and optional onmouseover() popups. Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: v0.6.2 $LastChangedRevision: 226 $
+Version: v0.6.3 $LastChangedRevision: 246 $
 
 Released under the GPLv2.
 
 inspired by Text Link Ads 1.4 by Wil rushmer, http://www.rushmer.com
 Uses domTT: http://www.mojavelinux.com/projects/domtooltip/
 Uses behaviour.js: http://bennolan.com/behaviour/
+Uses xajax: http://www.xajaxproject.org/
 
 Other URLs:
 http://freshmeat.net/projects/hover/
@@ -170,8 +171,7 @@ function sv_hover_header () {
 
 		/* we need to define or style regardless if we should include
 		 * domTT or not since above we already checked for js support */
-		echo '<script type="text/javascript" '.
-			'language="javascript">';
+		echo '<script type="text/javascript">';
 		echo 'var domTT_styleClass = \'hover\';';
 		echo '</script>'."\n";
 
@@ -256,8 +256,14 @@ function sv_hover_footer($footer) {
 			HOVER_JS_URL.
 			'"></script>'."\n";
 	} else {
-		echo '<script type="text/javascript" language="javascript">';
+		/* we need to enclose our javascript code in CDATA tags
+		 * since XHTML 1.0 Strict defines the contents of
+		 * <script> as PCDATA which would us deny the
+		 * possibility to use special html characters */
+		echo '<script type="text/javascript">';
+		echo '/* <![CDATA[ */';
 		echo sv_hover_footer_js();
+		echo '/* ]]> */';
 		echo '</script>';
 	}
 }
@@ -408,6 +414,33 @@ are the defaults?",
 ));
 }
 
+function sv_hover_qa_check() {
+	sv_hover_qa_make_list(array(
+"How do I run the checks?",
+"Simply click on 'run checks' above. The tests will then be run through AJAX on
+demand to save CPU and bandwidth. Find below a short explanation of each check.",
+
+"Versions",
+"These are some internal versioning information. Please include them in every
+BUG report.",
+
+"Known Problems",
+"This is a list of known problems with links to their ticket numbers",
+
+"Javascript",
+"These checks test the availability of all needed javascript files. Access is
+tested via HTTP, thus resembling the behaviour of a normal browser. Errors here
+mostly indicate a wrong setting in 'Paths'.",
+
+"Config",
+"An overview of all of Hover's settings including their value. Please include
+them in every BUG report.",
+
+"Database",
+"This is the current database schema."
+));
+}
+
 function sv_hover_qa_interface() {
 	sv_hover_qa_make_list(array(
 "What are these settings for?",
@@ -449,9 +482,16 @@ and proxies can cache this file).",
 }
 
 function sv_hover_panel_head() {
+	global $xajax;
+
+	$xajax->printJavascript('../wp-content/plugins/hover/xajax');
 ?>
 <link type="text/css" rel="stylesheet" href="../wp-content/plugins/hover/admin.css" />
-<script type='text/javascript' src='../wp-content/plugins/hover/admin.js'></script
+<script type='text/javascript' src='../wp-content/plugins/hover/admin.js'></script>
+<script type='text/javascript'>
+xajax.loadingFunction =
+	function(){xajax.$('check').innerHTML='Loading, please wait.';};
+</script>
 <?php
 }
 
@@ -646,25 +686,124 @@ function sv_fieldset_end() {
 	printf('</fieldset>'."\n");
 }
 
+function sv_hover_check_url($url) {
+	$parsed = parse_url($url);
+
+	$fp = fsockopen($parsed['host'],
+		$parsed['port'] ? $parsed['port'] : 80,
+		$errno, $errstr, 30);
+
+	if (!$fp)
+		return "fsockopen(): '$errstr' '$url'";
+
+	$request = "HEAD ".$parsed['path']." HTTP/1.1\r\n";
+	$request .= "Host: ".$parsed['host']."\r\n";
+	$request .= "Connection: Close\r\n\r\n";
+	fwrite($fp, $request);
+
+	while (!feof($fp)) {
+		$data .= fgets($fp, 4096);
+	}
+	fclose($fp);
+
+	$response = explode("\n", $data);
+
+	$status = array_shift($response);
+	list($version, $code, $text) = split(' ', $status);
+
+	$header = "";
+
+	if (200 != $code) {
+		$ret  = "<p class=bad>ERROR: $status</p>";
+		$ret .= "<p><b>Request</b>:<pre>".$request."</pre></p>";
+		$ret .= "<p><b>Response</b>:<pre>".$data."</pre></p>";
+	} else
+		$ret = "OK";
+
+	return $ret;
+}
+
+function sv_hover_check_javascript() {
+	$behaviour = get_bloginfo('url').'/'
+		.get_option('SV_HOVER_PATH_BEHAVIOUR');
+
+	$domTT = get_bloginfo('url').'/'
+                .get_option('SV_HOVER_PATH_DOMTT');
+
+	$files = array(
+		"behaviour.js" => $behaviour,
+		"domTT.js" => $domTT,
+		"domLib.js" => $domTT,
+		"fadomatic.js" => $domTT
+	);
+
+	$checks = array();
+
+	foreach (array_keys($files) as $f) {
+		$checks{$f} = sv_hover_check_url($files{$f}.'/'.$f);
+	}
+
+	return $checks;
+}
+
+function sv_hover_check_database() {
+	global $wpdb;
+
+	$describe = $wpdb->get_results("DESCRIBE ".HOVER_TABLE);
+
+	foreach($describe as $d)
+		$db[$d->Field] = $d->Type;
+
+	return $db;
+}
+
+function sv_hover_check_ticket($id, $reason) {
+	return sprintf('<a href="%s/%s">Ticket #%s</a> %s',
+		'https://bc-bd.org/trac/hover/ticket',
+		$id, $id, $reason);
+}
+
+function sv_hover_check_known_problems() {
+	if (get_option('SV_HOVER_PATH_DOMTT') == "wp-content/plugins/hover/behaviour/domTT")
+		$ret['SV_HOVER_PATH_DOMTT'] = sv_hover_check_ticket(1, "FAILED");
+	else
+		$ret['SV_HOVER_PATH_DOMTT'] = sv_hover_check_ticket(1, "Ok");
+
+	return $ret;
+}
+
 function sv_hover_check() {
 	global $sv_hover_options;
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
-		"Path" => preg_replace(':.*(branches|trunk|tags)/?(.*) \$:',
+		"Path" => preg_replace(':.*(branches|trunk|tags)/?([^/]*)/.* \$:',
 			'$1 $2',
-			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.2/hover.php $'),
-		"Id" => '$Id: hover.php 226 2007-04-22 12:45:17Z bd $'
+			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.3/hover.php $'),
+		"Id" => '$Id: hover.php 246 2007-05-07 16:24:09Z bd $'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
 	
+	$known = sv_hover_check_known_problems();
+	$line .= sv_hover_draw_table("Known Problems", $known);
+
+	$javascript = sv_hover_check_javascript();
+	$line .= sv_hover_draw_table("Javascript", $javascript);
+
+	$options['TABLE'] = HOVER_TABLE;
 	foreach ($sv_hover_options as $opt)
 		$options{$opt} = get_option($opt);
 
 	$line .= sv_hover_draw_table("Config", $options);
 
-	return $line;
+	$db = sv_hover_check_database();
+	$line .= sv_hover_draw_table("Database", $db);
+
+	$response = new xajaxResponse();
+	$response->addAssign("check", "innerHTML", $line);
+
+	return $response;
 }
 
 /* our admin function, called from the options page */
@@ -725,8 +864,6 @@ function sv_hover_panel () {
 				<p>Configure domTT's fading effects. See
 				<a href="http://www.mojavelinux.com/cooker/demos/domTT/">
 				here</a> for a demo.</p>
-				<p><b>Warning:</b> fading <em>out</em> does not seem to work
-				at the moment.</p>
 
 				use fade effect for: 
 <?php
@@ -804,10 +941,15 @@ function sv_hover_panel () {
 
 <?php sv_fieldset_start("Check"); ?>
 
-		<p>This is an overview of all options set by hover.</p>
+		<p>For an overview of hovers options and to perform some
+		simple checks click here:
+		<a onClick="xajax_sv_hover_check();">run checks</a>.
+		Please see the Q&amp;A section below for more
+		information.</p>
 
+		<p id="check" />
 <?php
-	echo sv_hover_check();
+	sv_hover_qa_check();
 	sv_fieldset_end();
 ?>
 		</form>
@@ -817,8 +959,19 @@ function sv_hover_panel () {
 <?php
 }
 
+function sv_hover_xajax() {
+	global $xajax;
+
+	require_once("xajax/xajax.inc.php");
+
+	$xajax = new xajax();
+	$xajax->registerfunction("sv_hover_check");
+	$xajax->processRequests();
+}
+
 /* add ourselves to the options page */
 function sv_hover_admin() {
+	sv_hover_xajax();
 	if (get_option('SV_HOVER_MOVE')) {
 		if (function_exists('add_submenu_page'))
 			add_submenu_page('plugins.php', 'Hover', 'Hover', 1,
