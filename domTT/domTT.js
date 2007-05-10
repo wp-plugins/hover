@@ -768,7 +768,11 @@ function domTT_show(in_id, in_event)
 				fadeHandler.haltFade();
 				if (fade == 'out')
 				{
+/* fixed wrond method call, bd@bc-bd.org:
+	popups sould not show up on setting fade to out
 					fadeHandler.halt();
+*/
+					fadeHandler.show();
 				}
 			}
 

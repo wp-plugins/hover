@@ -34,7 +34,7 @@
 \begin_body
 
 \begin_layout Title
-Hover v0.6.0
+Hover vTRUNK
 \end_layout
 
 \begin_layout Author
@@ -80,7 +80,7 @@ Since software development is a highly dynamic process, documentation tends
 \end_layout
 
 \begin_layout Standard
-Right now this document is written for Hover version 0.6.0.
+Right now this document is written for Hover version TRUNK.
 \end_layout
 
 \begin_layout Subsection
@@ -165,7 +165,11 @@ Wordpress 2
 
 \begin_layout Standard
 Hover is a plugin for Wordpress 2 and has been successfully tested with
- these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7 and 2.1.0.
+ these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7, 2.1.0 and 2.1.3
+\end_layout
+
+\begin_layout Standard
+It is also known to work with Wordpress MU 1.2.
 \end_layout
 
 \begin_layout Subsubsection
@@ -337,7 +341,7 @@ Extract Plugin:
 \end_layout
 
 \begin_layout Quotation
-$ tar -xvzf /tmp/hover-0.6.0.tar.gz
+$ tar -xvzf /tmp/hover-TRUNK.tar.gz
 \end_layout
 
 \begin_layout Standard
@@ -345,7 +349,7 @@ Rename folder:
 \end_layout
 
 \begin_layout Quotation
-$ mv hover-0.6.0 hover
+$ mv hover-TRUNK hover
 \end_layout
 
 \begin_layout Standard
@@ -888,6 +892,20 @@ Move to Plugins:
 \newline
 This will move the configuration page from Options/Hover to Plugins/Hover
  which will allow editors to alter these options too.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Use File:
+\newline
+
+\series default
+When set to on, Hover will write all needed javascript code to a file and
+ reference it in your blog by url.
+ This enables client side caching thus leading to saved bandwidth on your
+ side.
+ As a bonus it also uses less CPU.
 \end_layout
 
 \begin_layout Subsection
