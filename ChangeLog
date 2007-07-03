@@ -1,0 +1,588 @@
+2007-07-03  Stefan Völkel <bd@bc-bd.org>
+
+	- tagged hover-0.6.4
+
+2007-07-03  Stefan Völkel <bd@bc-bd.org>
+
+	- changed release to 0.6.4
+
+2007-07-03  Stefan Völkel <bd@bc-bd.org>
+
+	- strip version number from folder when creating tarball
+
+2007-05-26  Stefan Völkel <bd@bc-bd.org>
+
+	- merged -c 263 from trunk into hover-0.6, references #5
+
+2007-05-21  Stefan Völkel <bd@bc-bd.org>
+
+	- switched javascript references to absolut urls, closes #3
+	  * use some constants to ensure consistent path usage
+	  * check scheme in sv_hover_check_url()
+	  * added check for #3
+	  * removed check for #1 which is shadowed by #3
+
+2007-05-21  Stefan Völkel <bd@bc-bd.org>
+
+	- tested up to version 2.2
+
+2007-05-07  Stefan Völkel <bd@bc-bd.org>
+
+	- changed release to 0.6.3
+
+2007-05-07  Stefan Völkel <bd@bc-bd.org>
+
+	- merged -r 243:HEAD from trunk into hover-0.6
+
+2007-05-07  Stefan Völkel <bd@bc-bd.org>
+
+	- merged -r 226:HEAD from trunk into hover-0.6
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- lets keep on fixing
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- and another  fix
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed $Url keyword
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- changed version to 0.6.2
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- branched maintenace branch v0.6.X
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- removed CR/LF
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed default setting for domTT path
+
+2007-04-22  Stefan Völkel <bd@bc-bd.org>
+
+	- minor documentation changes
+		* fix version in documentation
+		* added more supported versions
+		* added documentation for "Use File:"
+		* added URL
+
+2007-04-17  Stefan Völkel <bd@bc-bd.org>
+
+	- added version WPMU 1.2
+
+2007-03-26  Stefan Völkel <bd@bc-bd.org>
+
+	- added URL
+
+2007-03-26  Stefan Völkel <bd@bc-bd.org>
+
+	- added files needed for wp-plugins.org
+
+2007-03-25  Stefan Völkel <bd@bc-bd.org>
+
+	- changed version string from 0.5.1 to 0.6.0
+
+2007-03-25  Stefan Völkel <bd@bc-bd.org>
+
+	- added renaming of folder to documentation
+
+2007-03-25  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed removal of files
+
+2007-03-25  Stefan Völkel <bd@bc-bd.org>
+
+	- added distribution scripts
+
+2007-03-25  Stefan Völkel <bd@bc-bd.org>
+
+	- changed version string from 0.5.0 to 0.5.1
+
+2007-03-25  Stefan Völkel <bd@bc-bd.org>
+
+	- cherrypicked changes from raw
+	    * split up main hover administrative function
+	    * add support for Check fieldset
+	    * add sv_hover_die()
+	    * add sv_fieldset_start() and sv_fieldset_end()
+
+2007-03-23  Stefan Völkel <bd@bc-bd.org>
+
+	- added fade to q&a show
+
+2007-03-23  Stefan Völkel <bd@bc-bd.org>
+
+	- made q&a section hideable
+
+2007-03-23  Stefan Völkel <bd@bc-bd.org>
+
+	- made qa sections clickable
+
+2007-03-17  Stefan Völkel <bd@bc-bd.org>
+
+	- cleared up subsubmenu
+	    * seperated Doc item optically
+
+2007-03-17  Stefan Völkel <bd@bc-bd.org>
+
+	- added sv_hover_qa_interface()
+
+2007-02-27  Stefan Völkel <bd@bc-bd.org>
+
+	- fix table creation/upgrade code
+	  	* moved sql to global variable
+		* abort on error
+		* display sql code on error
+		* fix SV_HOVER_VERSION handling
+		* do not longer use dbDelta()
+
+2007-02-27  Stefan Völkel <bd@bc-bd.org>
+
+	- removed unneeded variable
+
+2007-02-22  Stefan Völkel <bd@bc-bd.org>
+
+	- added another download URL
+
+2007-02-22  Stefan Völkel <bd@bc-bd.org>
+
+	- added download URLs
+
+2007-02-17  Stefan Völkel <bd@bc-bd.org>
+
+	- extended sv_boolean_dropdown() calls
+
+2007-02-17  Stefan Völkel <bd@bc-bd.org>
+
+	- removed dead code
+
+2007-02-16  Stefan Völkel <bd@bc-bd.org>
+
+	- add newline after hover_replaceTitlesByTags();
+
+2007-02-16  Stefan Völkel <bd@bc-bd.org>
+
+	- move submit buttons to function
+
+2007-02-15  Stefan Völkel <bd@bc-bd.org>
+
+	- extend and simplify version compatibility list
+
+2007-02-15  Stefan Völkel <bd@bc-bd.org>
+
+	- merged branch file into trunk
+
+2007-02-10  Stefan Völkel <bd@bc-bd.org>
+
+	- updated documentation
+
+2007-02-10  Stefan Völkel <bd@bc-bd.org>
+
+	- removed Abstract
+
+2007-02-10  Stefan Völkel <bd@bc-bd.org>
+
+	- added link to pdf documentation
+
+2007-02-10  Stefan Völkel <bd@bc-bd.org>
+
+	- added sv_hover_qa_switches()
+
+2007-02-10  Stefan Völkel <bd@bc-bd.org>
+
+	- added "LastChangedRevision Id"
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added SV_HOVER_MOVE
+	      Create Hover Options page as a submenu page of ...
+	              ... Plugins (true)
+		      ... Options (false)
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- more documentation
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- more documentation
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- more documentation
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed title= usage with anchors
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added first version of documentation
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- Description is now called Popup
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added documentation
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed tidy warnings wrt websnapr
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed tidy warnings
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- moved css to extra file
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- moved Shortcuts to Menu
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- moved sv_hover_qa_links() to sv_hover_qa_make_list()
+	- minor interface fixes
+	  - sane interface values vor 1024x768
+	  - more update buttons
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- moved sv_hover_qa_titles() to sv_hover_qa_make_list()
+	- changed default value for SV_HOVER_REPLACETITLES
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added sv_hover_qa_make_list()
+	- used sv_hover_qa_make_list() in sv_hover_qa_titles()
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- listified sv_hover_qa_paths()
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- minor layout fixes
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added sv_hover_panel_css()
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- moved q&a sections to seperate methods
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- removed SV_HOVER_PATH_BEHAVIOUR and SV_HOVER_PATH_DOMTT fallback option
+	- added default values for the above to the Q&A
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- order sql result set by id
+		to work around substring problems (f.e. HTML and XHTML,
+		depending on which one is processed first, there are different
+		results) the result set is now ordered by id. this enables us to
+		somewhat specify the order of exection.
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- performance enhancement
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed websnapr
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- do not match word delimiters
+	- remove colons from search expressions
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fix css, show spinner on loading, broken in r178
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- moved hover.js inclusion after all other javascript files
+	- do not generate absolute url for hover.js
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- do not create absolute urls for javascript files
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added image for external links
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- removed invalid attribute, leftover from r164
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed spinner image url
+	- force image size
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added spinner for websnapr images
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- insert newlone before websnapr image
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added documentation
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- enabled websnapr support
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- enhanced title replacing
+		- pass options to javascript
+		- only include title javascript if replacing is enabled
+	- only include footer call if javascript is enabled
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added first version of title replacement support
+		- forked hover.js from domTT/domTT.js, [PATCH] sent to author
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- correctly fixed minor error on empty table, see borked r170
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- reverted 78
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed minor error on empty table
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added 'update options' button to each hover
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed minor whitespace error
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed missing semicolons
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fix SV_HOVER_PATH_DOMTT and SV_HOVER_PATH_BEHAVIOUR default settings
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- renamed misnamed column
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- change mouse pointer to help? on <acronym> mouseover
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed creating of new hovers
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added support for abbr and acronym
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- read and write the type of an item from/to database
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- aded database upgrade code
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- major admin page ui redesign in preperation of abbr and acronym features
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- minor admin page readability enhancement
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- enhanced fading effect handling
+		- only include javascript library if needed
+		- only pass options if fading is configured
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- minor admin page cleanup
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added svn:keyword
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- fixed version
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- minor namespace cleanup
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- removed _text_ads from method names
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	- added option to use domTT's fading effects
+	- used domTT's niceTitle style as the default hover style
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	do not stop word matching at a '-'
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	added LICENSE file
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	refactored r116:r117
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	fix unset domTT variables in some cases, see r116:r117
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	integrated domTT 0.7.3
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	fixed including of internal css, was broken with r97
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	add otion to disable including of javascript files
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	fixed error on options page when no links are defined
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	typo
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	added FIXME
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	added 'create js only for replaced phrases code', this needs php5 though, thus it is still commented out.
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	Non functional changes, some reformating, avoid long lines, etc
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	make path to domTT and behaviour.js an option
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	added comments
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	remove duplicate get_bloginfo()
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	updated documentation header
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	create valid array with no trailing comma, fixes ie display problem
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	renamed css class
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	integrated behaviour.js, first version
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	fix missing href='' attribute
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	added comments
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	moved configuration data to table
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	switched javascript to domTT
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	moved options page to plugins page
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	IE doesn't like <script .../>
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	use get_bloginfo()
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	non functional change, some reformating
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	dropdown boxes now display the actual configuration values
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	fixed USEJS bug
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	add option to disable js usage
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	fixed misplaced space in <script ...> tag
+
+2007-02-08  Stefan Völkel <bd@bc-bd.org>
+
+	non functional change, moved stuff around
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
