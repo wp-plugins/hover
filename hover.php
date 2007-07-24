@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups. Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: trunk $LastChangedRevision: 244 $
+Version: v0.6.5 $LastChangedRevision: 274 $
 
 Released under the GPLv2.
 
@@ -25,8 +25,13 @@ http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,2
 
 /* this is where we store our data */
 define('HOVER_TABLE', $table_prefix."hover");
+define('HOVER_BASE', get_bloginfo('url')."/wp-content/plugins/hover");
+
+define('HOVER_BEHAVIOUR_URL', HOVER_BASE."/behaviour");
+define('HOVER_DOMTT_URL', HOVER_BASE."/domTT");
+
 define('HOVER_JS_FILE', ABSPATH."wp-content/uploads/hover.js");
-define('HOVER_JS_URL', "wp-content/uploads/hover.js");
+define('HOVER_JS_URL', get_bloginfo('url')."/wp-content/uploads/hover.js");
 
 $sv_hover_options = array();
 
@@ -146,27 +151,22 @@ function sv_hover_header () {
 	if (get_option('SV_HOVER_USEJS') != "0") {
 		add_action('wp_footer', 'sv_hover_footer');
 
-		$path = get_option('SV_HOVER_PATH_BEHAVIOUR');
-		if ($path)
-			echo '<script type="text/javascript" src="'.
-			$path.
+		echo '<script type="text/javascript" src="'.
+			HOVER_BEHAVIOUR_URL.
 			'/behaviour.js"></script>'."\n";
 
-		$path = get_option('SV_HOVER_PATH_DOMTT');
-		if ($path) {
-			echo '<script type="text/javascript" src="'.
-				$path.
-				'/domLib.js"></script>'."\n";
-			echo '<script type="text/javascript" src="'.
-				$path.
-				'/domTT.js"></script>'."\n";
+		echo '<script type="text/javascript" src="'.
+			HOVER_DOMTT_URL.
+			'/domLib.js"></script>'."\n";
+		echo '<script type="text/javascript" src="'.
+			HOVER_DOMTT_URL.
+			'/domTT.js"></script>'."\n";
 
-			/* no need to include fading if it is not enabled */
-			if ("neither" != get_option('SV_HOVER_FADE')) {
-				echo '<script type="text/javascript" src="'.
-					$path.
-					'/fadomatic.js"></script>'."\n";
-			}
+		/* no need to include fading if it is not enabled */
+		if ("neither" != get_option('SV_HOVER_FADE')) {
+			echo '<script type="text/javascript" src="'.
+				HOVER_DOMTT_URL.
+				'/fadomatic.js"></script>'."\n";
 		}
 
 		/* we need to define or style regardless if we should include
@@ -176,15 +176,13 @@ function sv_hover_header () {
 		echo '</script>'."\n";
 
 		printf('<script type="text/javascript" src="%s"></script>'.
-			"\n", "wp-content/plugins/hover/hover.js");
+			"\n", HOVER_BASE."/hover.js");
 	}
 
 	/* include css if wanted */
 	if (get_option('SV_HOVER_USECSS') != "0") {
-		$path = get_bloginfo('url')."/wp-content/plugins/hover";
-
-		echo '<link type="text/css" rel="stylesheet" href="'.$path.
-			'/hover.css" />'."\n";
+		echo '<link type="text/css" rel="stylesheet" href="'.
+			HOVER_BASE.'/hover.css" />'."\n";
 	}
 }
 
@@ -394,26 +392,6 @@ function sv_hover_qa_links() {
 	));
 }
 
-function sv_hover_qa_paths() {
-	sv_hover_qa_make_list(array(
-"How do I stop Hover from including those scripts?",
-"Just clear the textboxes.",
-
-"Why or when am I going to need this?",
-"If another plugin or your theme already includes the needed javascript
-libraries there is no need to include them again. Also if you want to use
-another version of these libraries, for example if you made changes to them",
-
-"Oops, I messed with those settings and now it is not working any longer. What
-are the defaults?",
-'<table>
-<tr><td align="right">behaviour.js:</td><td>wp-content/plugins/hover/behaviour</td></tr>
-<tr><td align="right">domTT:</td><td>wp-content/plugins/hover/domTT</td></tr>
-</table>',
-
-));
-}
-
 function sv_hover_qa_check() {
 	sv_hover_qa_make_list(array(
 "How do I run the checks?",
@@ -484,10 +462,13 @@ and proxies can cache this file).",
 function sv_hover_panel_head() {
 	global $xajax;
 
-	$xajax->printJavascript('../wp-content/plugins/hover/xajax');
+	$xajax->printJavascript(HOVER_BASE.'/xajax');
+
+	printf('<link type="text/css" rel="stylesheet" href="%s" />'."\n",
+		HOVER_BASE."/admin.css");
+	printf("<script type='text/javascript' src='%s'></script>\n",
+		HOVER_BASE."/admin.js");
 ?>
-<link type="text/css" rel="stylesheet" href="../wp-content/plugins/hover/admin.css" />
-<script type='text/javascript' src='../wp-content/plugins/hover/admin.js'></script>
 <script type='text/javascript'>
 xajax.loadingFunction =
 	function(){xajax.$('check').innerHTML='Loading, please wait.';};
@@ -533,7 +514,6 @@ function sv_hover_subsubmenu() {
 	  <li><a href="#Fade">Fade</a></li>
 	  <li><a href="#Hovers">Hovers</a></li>
 	  <li><a href="#Interface">Interface</a></li>
-	  <li><a href="#Paths">Paths</a></li>
 	  <li><a href="#Switches">Switches</a></li>
 	  <li><a href="#Titles">Titles</a></li>
 	  <li><a href="#Websnapr">Websnapr</a></li>
@@ -542,11 +522,6 @@ function sv_hover_subsubmenu() {
 }
 
 function sv_hover_update_options() {
-	update_option('SV_HOVER_PATH_BEHAVIOUR',
-		$_POST['SV_HOVER_PATH_BEHAVIOUR']);
-	update_option('SV_HOVER_PATH_DOMTT',
-		$_POST['SV_HOVER_PATH_DOMTT']);
-
 	update_option('SV_HOVER_USECSS', $_POST['css']);
 	update_option('SV_HOVER_USEJS', $_POST['js']);
 	update_option('SV_HOVER_MOVE', $_POST['move']);
@@ -689,12 +664,15 @@ function sv_fieldset_end() {
 function sv_hover_check_url($url) {
 	$parsed = parse_url($url);
 
-	$fp = fsockopen($parsed['host'],
+	if ($parsed['scheme'] != "http")
+		return "ERROR scheme is '".$parsed['scheme']."' and not http";
+
+	$fp = @fsockopen($parsed['host'],
 		$parsed['port'] ? $parsed['port'] : 80,
 		$errno, $errstr, 30);
 
 	if (!$fp)
-		return "fsockopen(): '$errstr' '$url'";
+		return "ERROR fsockopen(): '$errstr' '$url'";
 
 	$request = "HEAD ".$parsed['path']." HTTP/1.1\r\n";
 	$request .= "Host: ".$parsed['host']."\r\n";
@@ -724,17 +702,11 @@ function sv_hover_check_url($url) {
 }
 
 function sv_hover_check_javascript() {
-	$behaviour = get_bloginfo('url').'/'
-		.get_option('SV_HOVER_PATH_BEHAVIOUR');
-
-	$domTT = get_bloginfo('url').'/'
-                .get_option('SV_HOVER_PATH_DOMTT');
-
 	$files = array(
-		"behaviour.js" => $behaviour,
-		"domTT.js" => $domTT,
-		"domLib.js" => $domTT,
-		"fadomatic.js" => $domTT
+		"behaviour.js" => HOVER_BEHAVIOUR_URL,
+		"domTT.js" => HOVER_DOMTT_URL,
+		"domLib.js" => HOVER_DOMTT_URL,
+		"fadomatic.js" => HOVER_DOMTT_URL,
 	);
 
 	$checks = array();
@@ -763,31 +735,29 @@ function sv_hover_check_ticket($id, $reason) {
 		$id, $id, $reason);
 }
 
-function sv_hover_check_known_problems() {
-	if (get_option('SV_HOVER_PATH_DOMTT') == "wp-content/plugins/hover/behaviour/domTT")
-		$ret['SV_HOVER_PATH_DOMTT'] = sv_hover_check_ticket(1, "FAILED");
-	else
-		$ret['SV_HOVER_PATH_DOMTT'] = sv_hover_check_ticket(1, "Ok");
-
-	return $ret;
-}
-
 function sv_hover_check() {
 	global $sv_hover_options;
+
+	$common = array(
+		"HOVER_BASE" => HOVER_BASE,
+		"HOVER_BEHAVIOUR_URL" => HOVER_BEHAVIOUR_URL,
+		"HOVER_DOMTT_URL" => HOVER_DOMTT_URL,
+		"HOVER_JS_FILE" => HOVER_JS_FILE,
+		"HOVER_JS_URL" => HOVER_JS_URL,
+		"SiteUrl" => get_bloginfo('siteurl'),
+		"Url" => get_bloginfo('url')
+	);
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
 		"Path" => preg_replace(':.*(branches|trunk|tags)/?([^/]*)/.* \$:',
 			'$1 $2',
-			'$URL: https://bc-bd.org/svn/repos/hover/trunk/hover.php $'),
-		"Id" => '$Id: hover.php 244 2007-05-07 16:19:53Z bd $'
+			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.5/hover.php $'),
+		"Id" => '$Id: hover.php 274 2007-07-24 15:32:34Z bd $'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
 	
-	$known = sv_hover_check_known_problems();
-	$line .= sv_hover_draw_table("Known Problems", $known);
-
 	$javascript = sv_hover_check_javascript();
 	$line .= sv_hover_draw_table("Javascript", $javascript);
 
@@ -796,6 +766,8 @@ function sv_hover_check() {
 		$options{$opt} = get_option($opt);
 
 	$line .= sv_hover_draw_table("Config", $options);
+
+	$line .= sv_hover_draw_table("Common", $common);
 
 	$db = sv_hover_check_database();
 	$line .= sv_hover_draw_table("Database", $db);
@@ -910,33 +882,8 @@ function sv_hover_panel () {
 	sv_hover_qa_interface();
 	sv_fieldset_end();
 	sv_hover_submit();
-
-	sv_fieldset_start("Paths");
 ?>
-				<p>You can define the paths where to find
-				domTT and behaviour.js (in case you already
-				have them on your system), if unsure leave
-				these settings at their default values.</p>
 
-				<table>
-					<tr>
-						<td>
-<?php	sv_hover_option_to_input('behaviour.js', 'SV_HOVER_PATH_BEHAVIOUR',
-	70); ?>
-						</td>
-					</tr>
-					<tr>
-						<td align="right">
-<?php	sv_hover_option_to_input('domTT', 'SV_HOVER_PATH_DOMTT', 70); ?>
-						</td>
-					</tr>
-				</table>
-<?php
-	sv_hover_qa_paths();
-
-	sv_fieldset_end();
-	sv_hover_submit();
-?>
 		</form>
 
 <?php sv_fieldset_start("Check"); ?>
@@ -997,7 +944,6 @@ function sv_hover_die($text, $sql = "none") {
 function sv_hover_install () {
 	global $wpdb, $sv_hover_sql;
 
-
 	/* does or table exist */
 	if ($wpdb->get_var("show tables like '".HOVER_TABLE."'") != HOVER_TABLE) {
 		$wpdb->query($sv_hover_sql) or sv_hover_die(
@@ -1015,6 +961,13 @@ function sv_hover_install () {
 			$update);
 
 		update_option('SV_HOVER_VERSION', 1);
+	}
+
+	if (1 == get_option('SV_HOVER_VERSION')) {
+		delete_option('SV_HOVER_PATH_BEHAVIOUR');
+		delete_option('SV_HOVER_PATH_DOMTT');
+
+		update_option('SV_HOVER_VERSION', 2);
 	}
 }
 
@@ -1042,9 +995,6 @@ sv_hover_add_option('SV_HOVER_USECSS', '1', "Use internal css", 'no');
 sv_hover_add_option('SV_HOVER_USEJS', '1', "Use javascript", 'no');
 sv_hover_add_option('SV_HOVER_USEFILE', '0', "Create Javascript file", 'no');
 sv_hover_add_option('SV_HOVER_MOVE', '1', "Move Page to Plugins", 'yes');
-
-sv_hover_add_option('SV_HOVER_PATH_BEHAVIOUR', 'wp-content/plugins/hover/behaviour', "Path to behaviour", 'no');
-sv_hover_add_option('SV_HOVER_PATH_DOMTT', 'wp-content/plugins/hover/domTT', "Path to domTT", 'no');
 
 /* layout options */
 sv_hover_add_option('SV_HOVER_SIZESEARCH', '20x1', "Size of Search Input Field", 'no');
