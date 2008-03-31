@@ -82,3 +82,7 @@ fieldset legend {
 	list-style: none;
 	text-align: center;
 }
+
+.ajax {
+	cursor: pointer;
+}

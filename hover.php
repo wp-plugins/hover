@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups. Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: v0.6.5 $LastChangedRevision: 274 $
+Version: v0.6.6 $LastChangedRevision: 298 $
 
 Released under the GPLv2.
 
@@ -31,7 +31,7 @@ define('HOVER_BEHAVIOUR_URL', HOVER_BASE."/behaviour");
 define('HOVER_DOMTT_URL', HOVER_BASE."/domTT");
 
 define('HOVER_JS_FILE', ABSPATH."wp-content/uploads/hover.js");
-define('HOVER_JS_URL', get_bloginfo('url')."/wp-content/uploads/hover.js");
+define('HOVER_JS_URL', get_bloginfo('url')."/wp-content/uploads");
 
 $sv_hover_options = array();
 
@@ -49,10 +49,16 @@ $sv_hover_sql = "CREATE TABLE ".HOVER_TABLE." (
 function sv_hover_get($content) {
 	global $sv_hover_data;
 
+	// aggregate replace counting data.
+	$maxreplace{'abbr'} = get_option('SV_HOVER_MAXREPLACE_ABBR');
+	$maxreplace{'acronym'} = get_option('SV_HOVER_MAXREPLACE_ACRONYM');
+	$maxreplace{'link'} = get_option('SV_HOVER_MAXREPLACE_LINK');
+
 	/* loop over all links and replace them */
 
 	foreach ($sv_hover_data as $hover)
-		$content = preg_replace($hover->search, $hover->replace, $content);
+		$content = preg_replace($hover->search, $hover->replace,
+		$content, $maxreplace{$hover->type});
 
 	return $content;
 }
@@ -127,6 +133,7 @@ function sv_hover_create_data() {
 
 		$sv_hover_data[$id]->search = $search;
 		$sv_hover_data[$id]->replace = $replace;
+		$sv_hover_data[$id]->type = $link->type;
 
 		// reference java script on mouse events
 		if (get_option('SV_HOVER_USEJS') != "0")
@@ -251,7 +258,7 @@ function sv_hover_footer($footer) {
 
 	if (get_option('SV_HOVER_USEFILE') && is_file(HOVER_JS_FILE)) {
 		echo '<script type="text/javascript" src="'.
-			HOVER_JS_URL.
+			HOVER_JS_URL.'/hover.js'.
 			'"></script>'."\n";
 	} else {
 		/* we need to enclose our javascript code in CDATA tags
@@ -341,7 +348,8 @@ function sv_hover_qa_make_list($list) {
 	$id = "qa".$sv_hover_qa_id;
 ?>
  <div class="qa">
-  <p onclick="sv_hover_show('<?php echo $id?>')">Questions &amp; Answers</p>
+  <p onclick="sv_hover_show('<?php echo $id?>')" class="ajax">
+  Questions &amp; Answers</p>
   <ol class="visible" id="<?php echo $id?>">
 <?php
 
@@ -417,6 +425,30 @@ them in every BUG report.",
 "Database",
 "This is the current database schema."
 ));
+}
+
+function sv_hover_qa_maxreplace() {
+	sv_hover_qa_make_list(array(
+"I am not sure I understand what this option actually does?",
+"With maxreplace you are able to limit the number of times a specific hover is
+created. For example if you define an acronym Hover for 'FTP' and use this in
+your posting 'FTP is a simple protocol. FTP may use two Ports.' and a maxreplace
+limit of 1 for acronyms only the first occurance of FTP will be decorated with a
+popup.",
+
+"I used a maxreplace of 1, but still more than one Hover is created for the same
+term?",
+"Due to technical limitations maxreplace can only be applied to certain blocks
+of your content. On your Frontpage maxreplace limitation only works per posting,
+thus a Hover found in two postings will be replaced one time per posting.",
+
+"I want to replace all occurances!",
+"Just enter a value of -1.",
+
+"I entered 0 and no hovers are created?!",
+"Hover did just as it was told and replaced 0 occurances (see previous Q&amp;A)."
+));
+
 }
 
 function sv_hover_qa_interface() {
@@ -514,6 +546,7 @@ function sv_hover_subsubmenu() {
 	  <li><a href="#Fade">Fade</a></li>
 	  <li><a href="#Hovers">Hovers</a></li>
 	  <li><a href="#Interface">Interface</a></li>
+	  <li><a href="#Maxreplace">Maxreplace</a></li>
 	  <li><a href="#Switches">Switches</a></li>
 	  <li><a href="#Titles">Titles</a></li>
 	  <li><a href="#Websnapr">Websnapr</a></li>
@@ -538,6 +571,10 @@ function sv_hover_update_options() {
 
 	update_option('SV_HOVER_WEBSNAPR_ACRONYM', $_POST['SV_HOVER_WEBSNAPR_ACRONYM']);
 	update_option('SV_HOVER_WEBSNAPR_LINK', $_POST['SV_HOVER_WEBSNAPR_LINK']);
+
+	update_option('SV_HOVER_MAXREPLACE_ABBR', $_POST['SV_HOVER_MAXREPLACE_ABBR']);
+	update_option('SV_HOVER_MAXREPLACE_ACRONYM', $_POST['SV_HOVER_MAXREPLACE_ACRONYM']);
+	update_option('SV_HOVER_MAXREPLACE_LINK', $_POST['SV_HOVER_MAXREPLACE_LINK']);
 }
 
 function sv_hover_new_hover() {
@@ -662,39 +699,19 @@ function sv_fieldset_end() {
 }
 
 function sv_hover_check_url($url) {
-	$parsed = parse_url($url);
 
-	if ($parsed['scheme'] != "http")
-		return "ERROR scheme is '".$parsed['scheme']."' and not http";
+	require_once( ABSPATH . 'wp-includes/class-snoopy.php');
 
-	$fp = @fsockopen($parsed['host'],
-		$parsed['port'] ? $parsed['port'] : 80,
-		$errno, $errstr, 30);
+	$snoopy = New Snoopy;
+	$snoopy->fetch($url);
 
-	if (!$fp)
-		return "ERROR fsockopen(): '$errstr' '$url'";
-
-	$request = "HEAD ".$parsed['path']." HTTP/1.1\r\n";
-	$request .= "Host: ".$parsed['host']."\r\n";
-	$request .= "Connection: Close\r\n\r\n";
-	fwrite($fp, $request);
-
-	while (!feof($fp)) {
-		$data .= fgets($fp, 4096);
-	}
-	fclose($fp);
-
-	$response = explode("\n", $data);
-
-	$status = array_shift($response);
-	list($version, $code, $text) = split(' ', $status);
-
-	$header = "";
+	list($version, $code, $text) = split(' ', $snoopy->response_code);
 
 	if (200 != $code) {
-		$ret  = "<p class=bad>ERROR: $status</p>";
-		$ret .= "<p><b>Request</b>:<pre>".$request."</pre></p>";
-		$ret .= "<p><b>Response</b>:<pre>".$data."</pre></p>";
+		$ret  = "<p class=bad>ERROR: $snoopy->response_code</p>";
+		$ret .= "<p><b>Url</b>:<pre>".$url."</pre></p>";
+		$ret .= "<p><b>Response</b>:<pre>".
+			join("", $snoopy->headers)."</pre></p>";
 	} else
 		$ret = "OK";
 
@@ -707,12 +724,19 @@ function sv_hover_check_javascript() {
 		"domTT.js" => HOVER_DOMTT_URL,
 		"domLib.js" => HOVER_DOMTT_URL,
 		"fadomatic.js" => HOVER_DOMTT_URL,
+		"hover.js" => HOVER_JS_URL
 	);
 
 	$checks = array();
 
 	foreach (array_keys($files) as $f) {
 		$checks{$f} = sv_hover_check_url($files{$f}.'/'.$f);
+	}
+
+	# this is kind of evil since we first perform the check and then
+	# hide the error if USEFILE is disabled.
+	if ( !get_option('SV_HOVER_USEFILE') ) {
+		$checks{$f} = "disabled";
 	}
 
 	return $checks;
@@ -752,8 +776,8 @@ function sv_hover_check() {
 		"DB" => get_option('SV_HOVER_VERSION'),
 		"Path" => preg_replace(':.*(branches|trunk|tags)/?([^/]*)/.* \$:',
 			'$1 $2',
-			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.5/hover.php $'),
-		"Id" => '$Id: hover.php 274 2007-07-24 15:32:34Z bd $'
+			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.6/hover.php $'),
+		"Id" => '$Id: hover.php 298 2008-03-31 14:22:56Z bd $'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
@@ -818,6 +842,21 @@ function sv_hover_panel () {
 		<form action="<?php echo $_SERVER["REQUEST_URI"]?>" method="post">
 <?php
 	sv_hover_hovers();
+
+	sv_fieldset_start("Maxreplace");
+
+?>
+			<p>Here you can limit the number of times types of
+			Hovers are created.</p>
+<?php
+	sv_hover_option_to_input('Abbr', 'SV_HOVER_MAXREPLACE_ABBR');
+	sv_hover_option_to_input('Acronym', 'SV_HOVER_MAXREPLACE_ACRONYM');
+	sv_hover_option_to_input('Link', 'SV_HOVER_MAXREPLACE_LINK');
+
+	sv_hover_qa_maxreplace();
+
+	sv_fieldset_end();
+	sv_hover_submit();
 
 	sv_fieldset_start("Switches");
 
@@ -890,7 +929,8 @@ function sv_hover_panel () {
 
 		<p>For an overview of hovers options and to perform some
 		simple checks click here:
-		<a onClick="xajax_sv_hover_check();">run checks</a>.
+		<a onClick="xajax_sv_hover_check();" class="ajax">
+		run checks</a>.
 		Please see the Q&amp;A section below for more
 		information.</p>
 
@@ -1010,4 +1050,8 @@ sv_hover_add_option('SV_HOVER_REPLACETITLES', 'img,span,a', "Replace title attri
 
 sv_hover_add_option('SV_HOVER_WEBSNAPR_LINK', '1', "Use Websnapr on links", 'no');
 sv_hover_add_option('SV_HOVER_WEBSNAPR_ACRONYM', '1', "Use Websnapr on acronyms", 'no');
+
+sv_hover_add_option('SV_HOVER_MAXREPLACE_ABBR', '-1', "Maximum number an abbr is replaced", 'no');
+sv_hover_add_option('SV_HOVER_MAXREPLACE_ACRONYM', '-1', "Maximum number an acronym is replaced", 'no');
+sv_hover_add_option('SV_HOVER_MAXREPLACE_LINK', '-1', "Maximum number a link is replaced", 'no');
 ?>
