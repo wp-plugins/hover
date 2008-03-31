@@ -1,0 +1,88 @@
+fieldset {
+	border: black 1px dotted;
+	margin-bottom: 1ex;
+}
+
+fieldset legend {
+	font-weight: bold;
+}
+
+.qa {
+}
+
+.qa p {
+	text-decoration: underline;
+}
+
+.hidden {
+	visibility: hidden;
+	display: none;
+}
+
+.visible {
+	visibility: visible;
+	display: block;
+}
+
+.qa ul {
+	margin: 0;
+	padding: 0;
+
+	list-style-type: none;
+	list-style-image: none;
+}
+
+.question {
+	font-weight: bold;
+}
+
+.answer {
+	margin-left: 1em;
+}
+
+.answer ul {
+	margin-top: 1ex;
+	margin-left: 1em;
+}
+
+.pre {
+	border: black 1px dotted;
+	font-family: 'Lucida Console','Andale Mono',Courier,monospace;
+	white-space: pre;
+}
+
+.bad {
+	color: red;
+}
+
+.good {
+	color: green;
+}
+
+#subsubmenu {
+	background: #96e6f9;
+	margin: 0px;
+	padding-left: 4em;
+}
+
+#subsubmenu a {
+	color: black;
+	padding: 3px 5px;
+	border: none;
+}
+
+#subsubmenu a:hover {
+	background: #ddeaf4;
+	color: #333;
+}
+
+#subsubmenu li {
+	display: inline;
+	line-height: 200%;
+	list-style: none;
+	text-align: center;
+}
+
+.ajax {
+	cursor: pointer;
+}
