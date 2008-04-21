@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups. Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: v0.6.6 $LastChangedRevision: 298 $
+Version: v0.6.7 $LastChangedRevision: 303 $
 
 Released under the GPLv2.
 
@@ -22,6 +22,11 @@ http://wp-plugins.net/plugin/hover/#plugin_2211
 http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231/Itemid,40/
 
 */
+
+/* since 2.5 we need to define those two global, else
+ * sv_hover_install is not able to access the needed values
+ * see https://bc-bd.org/trac/hover/ticket/13 */
+global $table_prefix, $sv_hover_sql;
 
 /* this is where we store our data */
 define('HOVER_TABLE', $table_prefix."hover");
@@ -776,8 +781,8 @@ function sv_hover_check() {
 		"DB" => get_option('SV_HOVER_VERSION'),
 		"Path" => preg_replace(':.*(branches|trunk|tags)/?([^/]*)/.* \$:',
 			'$1 $2',
-			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.6/hover.php $'),
-		"Id" => '$Id: hover.php 298 2008-03-31 14:22:56Z bd $'
+			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.7/hover.php $'),
+		"Id" => '$Id: hover.php 303 2008-04-21 20:32:16Z bd $'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
@@ -986,8 +991,7 @@ function sv_hover_install () {
 
 	/* does or table exist */
 	if ($wpdb->get_var("show tables like '".HOVER_TABLE."'") != HOVER_TABLE) {
-		$wpdb->query($sv_hover_sql) or sv_hover_die(
-			"Could not create database:", $sv_hover_sql);
+		$wpdb->query($sv_hover_sql);
 		update_option('SV_HOVER_VERSION', 1);
 	}
 
