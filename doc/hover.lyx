@@ -1,17 +1,25 @@
-#LyX 1.4.3 created this file. For more info see http://www.lyx.org/
-\lyxformat 245
+#LyX 1.5.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
 \begin_document
 \begin_header
 \textclass scrartcl
 \language english
 \inputencoding auto
-\fontscheme helvet
+\font_roman default
+\font_sans helvet
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
 \graphics default
 \paperfontsize default
 \spacing single
 \papersize default
 \use_geometry false
 \use_amsmath 1
+\use_esint 0
 \cite_engine basic
 \use_bibtopic false
 \paperorientation portrait
@@ -29,16 +37,17 @@
 \bullet 3 0 8 -1
 \tracking_changes false
 \output_changes false
+\author "" 
 \end_header
 
 \begin_body
 
 \begin_layout Title
-Hover v0.6.7
+Hover v0.6.8
 \end_layout
 
 \begin_layout Author
-Stefan Völkel <bd@bc-bd.org>
+Stefan VÃ¶lkel <bd@bc-bd.org>
 \end_layout
 
 \begin_layout Date
@@ -58,7 +67,7 @@ today
 \end_layout
 
 \begin_layout Standard
-\begin_inset LatexCommand \tableofcontents{}
+\begin_inset LatexCommand tableofcontents
 
 \end_inset
 
@@ -80,7 +89,7 @@ Since software development is a highly dynamic process, documentation tends
 \end_layout
 
 \begin_layout Standard
-Right now this document is written for Hover version 0.6.7.
+Right now this document is written for Hover version 0.6.8.
 \end_layout
 
 \begin_layout Subsection
@@ -174,7 +183,8 @@ It is also known to work with Wordpress MU 1.2.
 
 \begin_layout Subsubsection
 Javascript
-\begin_inset LatexCommand \label{Requirements:Javascript}
+\begin_inset LatexCommand label
+name "Requirements:Javascript"
 
 \end_inset
 
@@ -262,7 +272,8 @@ Hover is available at these URLs:
 freshmeat.net:
 \series default
  
-\begin_inset LatexCommand \url{http://freshmeat.net/projects/hover/}
+\begin_inset LatexCommand url
+target "http://freshmeat.net/projects/hover/"
 
 \end_inset
 
@@ -275,7 +286,8 @@ freshmeat.net:
 blog:
 \series default
  
-\begin_inset LatexCommand \url{http://bc-bd.org/}
+\begin_inset LatexCommand url
+target "http://bc-bd.org/"
 
 \end_inset
 
@@ -288,7 +300,8 @@ blog:
 wp-plugins.net:
 \series default
  
-\begin_inset LatexCommand \url{http://wp-plugins.net/plugin/hover/#plugin_2211}
+\begin_inset LatexCommand url
+target "http://wp-plugins.net/plugin/hover/#plugin_2211"
 
 \end_inset
 
@@ -301,7 +314,8 @@ wp-plugins.net:
 wordpress.softplug.net:
 \series default
  
-\begin_inset LatexCommand \url{http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231/Itemid,40/}
+\begin_inset LatexCommand url
+target "http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231/Itemid,40/"
 
 \end_inset
 
@@ -310,7 +324,8 @@ wordpress.softplug.net:
 
 \begin_layout Subsection
 Installation
-\begin_inset LatexCommand \label{sub:Installation}
+\begin_inset LatexCommand label
+name "sub:Installation"
 
 \end_inset
 
@@ -341,7 +356,7 @@ Extract Plugin:
 \end_layout
 
 \begin_layout Quotation
-$ tar -xvzf /tmp/hover-0.6.7.tar.gz
+$ tar -xvzf /tmp/hover-0.6.8.tar.gz
 \end_layout
 
 \begin_layout Standard
@@ -349,7 +364,7 @@ Rename folder:
 \end_layout
 
 \begin_layout Quotation
-$ mv hover-0.6.7 hover
+$ mv hover-0.6.8 hover
 \end_layout
 
 \begin_layout Standard
@@ -358,7 +373,8 @@ Login as admin to your Wordpress instance and activate the plugin.
 
 \begin_layout Standard
 Please refer to 
-\begin_inset LatexCommand \ref{sub:Admin-Interface}
+\begin_inset LatexCommand ref
+reference "sub:Admin-Interface"
 
 \end_inset
 
@@ -367,7 +383,8 @@ Please refer to
 
 \begin_layout Subsection
 Upgrade
-\begin_inset LatexCommand \label{sub:Upgrade}
+\begin_inset LatexCommand label
+name "sub:Upgrade"
 
 \end_inset
 
@@ -376,7 +393,8 @@ Upgrade
 
 \begin_layout Standard
 When upgrading from a former realease install as described 
-\begin_inset LatexCommand \eqref{sub:Installation}
+\begin_inset LatexCommand eqref
+reference "sub:Installation"
 
 \end_inset
 
@@ -434,7 +452,8 @@ SV_HOVER_
 \begin_layout Enumerate
 Consider writing a short feedback eMail on why you did not want to use Hover
  see 
-\begin_inset LatexCommand \ref{sub:Feedback}
+\begin_inset LatexCommand ref
+reference "sub:Feedback"
 
 \end_inset
 
@@ -443,7 +462,8 @@ Consider writing a short feedback eMail on why you did not want to use Hover
 
 \begin_layout Subsection
 Feedback 
-\begin_inset LatexCommand \label{sub:Feedback}
+\begin_inset LatexCommand label
+name "sub:Feedback"
 
 \end_inset
 
@@ -469,12 +489,14 @@ Quickstart
 
 \begin_layout Enumerate
 Install 
-\begin_inset LatexCommand \eqref{sub:Installation}
+\begin_inset LatexCommand eqref
+reference "sub:Installation"
 
 \end_inset
 
  or upgrade 
-\begin_inset LatexCommand \eqref{sub:Upgrade}
+\begin_inset LatexCommand eqref
+reference "sub:Upgrade"
 
 \end_inset
 
@@ -483,7 +505,8 @@ Install
 
 \begin_layout Enumerate
 Access Admin interface 
-\begin_inset LatexCommand \eqref{sub:Admin-Interface}
+\begin_inset LatexCommand eqref
+reference "sub:Admin-Interface"
 
 \end_inset
 
@@ -492,7 +515,8 @@ Access Admin interface
 
 \begin_layout Enumerate
 Create Hover 
-\begin_inset LatexCommand \eqref{sub:Examples}
+\begin_inset LatexCommand eqref
+reference "sub:Examples"
 
 \end_inset
 
@@ -505,7 +529,8 @@ Features
 
 \begin_layout Subsection
 Admin Interface 
-\begin_inset LatexCommand \label{sub:Admin-Interface}
+\begin_inset LatexCommand label
+name "sub:Admin-Interface"
 
 \end_inset
 
@@ -568,7 +593,9 @@ Hovers
 \end_layout
 
 \begin_layout Standard
-Each item has 4 attributes, 
+Each item has 4 attributes,
+\color none
+ 
 \color red
 Type
 \color none
@@ -672,7 +699,8 @@ Content of the popup to show on MouseOver.
 
 \begin_layout Subsection
 Examples:
-\begin_inset LatexCommand \label{sub:Examples}
+\begin_inset LatexCommand label
+name "sub:Examples"
 
 \end_inset
 
@@ -811,7 +839,9 @@ Fade
 Hover supports all fading options provided by domTT.
  All options defined here will be passed through to domTT, so please refer
  to the domTT 
-\begin_inset LatexCommand \url[webpage]{http://www.mojavelinux.com/cooker/demos/domTT/}
+\begin_inset LatexCommand url
+name "webpage"
+target "http://www.mojavelinux.com/cooker/demos/domTT/"
 
 \end_inset
 
@@ -876,7 +906,8 @@ Use javascript
 \newline
 Turn off the usage of Javascript alltogether.
  This will disable some features of Hover (see 
-\begin_inset LatexCommand \ref{Requirements:Javascript}
+\begin_inset LatexCommand ref
+reference "Requirements:Javascript"
 
 \end_inset
 

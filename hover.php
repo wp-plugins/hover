@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups. Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: v0.6.7 $LastChangedRevision: 303 $
+Version: v0.6.8
 
 Released under the GPLv2.
 
@@ -30,13 +30,22 @@ global $table_prefix, $sv_hover_sql;
 
 /* this is where we store our data */
 define('HOVER_TABLE', $table_prefix."hover");
-define('HOVER_BASE', get_bloginfo('url')."/wp-content/plugins/hover");
+define('HOVER_BASE', get_bloginfo('wpurl')."/wp-content/plugins/hover");
 
 define('HOVER_BEHAVIOUR_URL', HOVER_BASE."/behaviour");
 define('HOVER_DOMTT_URL', HOVER_BASE."/domTT");
 
-define('HOVER_JS_FILE', ABSPATH."wp-content/uploads/hover.js");
-define('HOVER_JS_URL', get_bloginfo('url')."/wp-content/uploads");
+if (substr(get_option('upload_path'),0 , 1) == "/") {
+	define('HOVER_JS_FILE', get_option("upload_path")."/"."hover.js");
+} else {
+	define('HOVER_JS_FILE', ABSPATH."/".get_option("upload_path")."/hover.js");
+}
+
+if (get_option('upload_url_path')) {
+	define('HOVER_JS_URL', get_option('upload_url_path'));
+} else {
+	define('HOVER_JS_URL', get_bloginfo('wpurl')."/wp-content/uploads");
+}
 
 $sv_hover_options = array();
 
@@ -545,7 +554,7 @@ function sv_hover_draw_table($name, $table) {
 function sv_hover_subsubmenu() {
 ?>
 	 <ul id="subsubmenu">
-	  <li><a href="../wp-content/plugins/hover/doc/hover.pdf"><b>Doc</b></a></li>
+	  <li><a href="<?php echo HOVER_BASE ?>/doc/hover.pdf"><b>Doc</b></a></li>
 	  <li>|</li>
 	  <li><a href="#Check">Check</a></li>
 	  <li><a href="#Fade">Fade</a></li>
@@ -747,6 +756,31 @@ function sv_hover_check_javascript() {
 	return $checks;
 }
 
+function sv_hover_check_upload_url() {
+	global $wpdb;
+
+	$describe = $wpdb->get_results("DESCRIBE ".HOVER_TABLE);
+
+	if (get_option("SV_HOVER_USEFILE")) {
+		$check["SV_HOVER_USEFILE"] = "True, the following checks apply to you.";
+	} else {
+		$check["SV_HOVER_USEFILE"] = "False, you can ignore the following checks and possible warning messages";
+	}
+
+	if (substr(get_option('upload_path'),0 , 1) == "/") {
+		$check["upload_path"] = "Is an absolute path, checking for upload_url_path";
+		if (get_option('upload_url_path')) {
+			$check["upload_url_path"] = "Is set, good.";
+		} else {
+			$check["upload_url_path"] = "Is unset, <span class=bad>BAD</span>. YOU WILL NEED TO CONFIGURE THIS OR USE A RELATIVE PATH FOR upload_url. Hover wil fail to work if you don't.";
+		}
+	} else {
+		$check["upload_path"] = "Is an relative path, good. Skiping unneeded tests";
+	}
+
+	return $check;
+}
+
 function sv_hover_check_database() {
 	global $wpdb;
 
@@ -773,16 +807,16 @@ function sv_hover_check() {
 		"HOVER_DOMTT_URL" => HOVER_DOMTT_URL,
 		"HOVER_JS_FILE" => HOVER_JS_FILE,
 		"HOVER_JS_URL" => HOVER_JS_URL,
-		"SiteUrl" => get_bloginfo('siteurl'),
-		"Url" => get_bloginfo('url')
+		"wpurl" => get_bloginfo('wpurl'),
+		"url" => get_bloginfo('url'),
+		"upload_path" => get_option('upload_path'),
+		"upload_url_path" => get_option('upload_url_path')
 	);
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
-		"Path" => preg_replace(':.*(branches|trunk|tags)/?([^/]*)/.* \$:',
-			'$1 $2',
-			'$URL: https://bc-bd.org/svn/repos/hover/tags/hover-0.6.7/hover.php $'),
-		"Id" => '$Id: hover.php 303 2008-04-21 20:32:16Z bd $'
+		"Version" => 'v0.6.8',
+		"Commit" => '4e611b6aa77b7461f84ca06aa84d03cb209cf729'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
@@ -797,6 +831,9 @@ function sv_hover_check() {
 	$line .= sv_hover_draw_table("Config", $options);
 
 	$line .= sv_hover_draw_table("Common", $common);
+
+	$url = sv_hover_check_upload_url();
+	$line .= sv_hover_draw_table("Upload Checks", $url);
 
 	$db = sv_hover_check_database();
 	$line .= sv_hover_draw_table("Database", $db);
