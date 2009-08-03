@@ -2,10 +2,10 @@
 /*
 Plugin Name: Hover
 Plugin URI: http://bc-bd.org/blog/?page_id=48
-Description: Replaces keywords with links and optional onmouseover() popups. Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>.
+Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: v0.6.8
+Version: v0.6.9
 
 Released under the GPLv2.
 
@@ -16,10 +16,7 @@ Uses xajax: http://www.xajaxproject.org/
 
 Other URLs:
 http://freshmeat.net/projects/hover/
-http://wpplugins.org/plugin/hover
 http://svn.wp-plugins.org/hover/
-http://wp-plugins.net/plugin/hover/#plugin_2211
-http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231/Itemid,40/
 
 */
 
@@ -92,13 +89,26 @@ function sv_hover_create_data() {
 		return false;
 
 	foreach ($sv_hover_links as $link){
-		// pattern matching our name
-		$search = "|(?!<[^<>]*?)(?<![?./&])".
+		# the search pattern to look for
+		# - first we habe a negative look behind pattern making sure we
+		#   are on a word boundary
+		# - the next negative look behind pattern makes sure we are not
+		#   preceeded by a colon, this is to support conditional
+		#   replacement
+		# - third, the term to search for, e.g. the hover
+		# - fourht, a word boundary to not replace midword
+		# - fifth, a negative look ahead pattern to make sure that no
+		#   dash or colon is following, e.g. hoover-0.6.9.tar.gz
+		# - sixth, make sure that we are not inside a html tag, e.g.
+		#   <img src=="http://bc-bd.org/hover/" />
+		$search = "#(?<!&|\w)(?<!:)".
 			"$link->search".
-			"([ \.,\!\?])(?!:)(?![^<>]*?>)|imsU";
+			"\b(?![-\.]\b)(?![^<>]*?>)#ims";
 
-		$replace = preg_replace('|^:(.*):$|imsU', '$1',
-			$link->search);
+		# the replace pattern, here we remove any leading colons, in
+		# order to support conditional replacement.
+		$replace = preg_replace('|^:(.*)$|imsU', '$1',
+			$link->search); 
 
 		$id = 'hover'.$link->id;
 
@@ -591,10 +601,20 @@ function sv_hover_update_options() {
 	update_option('SV_HOVER_MAXREPLACE_LINK', $_POST['SV_HOVER_MAXREPLACE_LINK']);
 }
 
+# escape description
+# FIXME: maybe we need a more general approach, e.g. htmlentities(), utf8, ...
+function sv_hover_escape_description($description) {
+	$description = preg_replace('|\r\n|', '<br/>', $description);
+	$description = preg_replace("|'|", '&#39;', $description);
+
+	return $description;
+}
+
 function sv_hover_new_hover() {
 	global $wpdb;
 
-	# FIXME handle newlines in description
+	$description = sv_hover_escape_description($_POST['description0']);
+
 	return $wpdb->query(
 		"INSERT INTO ".HOVER_TABLE.
 		" (search, type, link, description)".
@@ -602,7 +622,7 @@ function sv_hover_new_hover() {
 			"'".$_POST['search0']."',".
 			"'".$_POST['type0']."',".
 			"'".$_POST['link0']."',".
-			"'".$_POST['description0']."'".
+			"'".$description."'".
 		")"
 	);
 }
@@ -620,7 +640,9 @@ function sv_hover_update_hovers() {
 				" WHERE id='$id'"
 				);
 		} else {
-			$desc = preg_replace('|\r\n|', '<br/>', $_POST['description'.$id]);
+			$desc = sv_hover_escape_description(
+				$_POST['description'.$id]);
+
 			$result = $wpdb->query(
 				"UPDATE ".HOVER_TABLE.
 				" SET".
@@ -792,6 +814,25 @@ function sv_hover_check_database() {
 	return $db;
 }
 
+function sv_hover_check_upgrade() {
+	global $wpdb;
+
+	$colons = $wpdb->get_results(
+		"SELECT search".
+		" FROM ".HOVER_TABLE." WHERE search LIKE ':%:'"
+		);
+
+	foreach ($colons as $c) {
+		$db["Colons ".$c->search] = "Found, please remove training colon";
+	}
+
+	if (!is_array($db)) {
+		$db["Colons"] = "No trailing colons found, good";
+	}
+
+	return $db;
+}
+
 function sv_hover_check_ticket($id, $reason) {
 	return sprintf('<a href="%s/%s">Ticket #%s</a> %s',
 		'https://bc-bd.org/trac/hover/ticket',
@@ -815,8 +856,8 @@ function sv_hover_check() {
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
-		"Version" => 'v0.6.8',
-		"Commit" => '4e611b6aa77b7461f84ca06aa84d03cb209cf729'
+		"Version" => 'v0.6.9',
+		"Commit" => 'd680b5d1d48ecdffd99a4cd934690667f9929527'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
@@ -837,6 +878,9 @@ function sv_hover_check() {
 
 	$db = sv_hover_check_database();
 	$line .= sv_hover_draw_table("Database", $db);
+
+	$db = sv_hover_check_upgrade();
+	$line .= sv_hover_draw_table("Upgrade", $db);
 
 	$response = new xajaxResponse();
 	$response->addAssign("check", "innerHTML", $line);

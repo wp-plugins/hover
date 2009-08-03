@@ -1,0 +1,19 @@
+Hover 0.6.9
+===========
+
+Conditional Replacement:
+
+	Starting with 0.6.9 conditional replacment handling has changed. Before
+	0.6.9 you needed to _enclose_ the hover with colons, e.g.:
+
+		:foo:
+	
+	As of 0.6.9 you need only to _prefix_ your hover with a colon (both when
+	defining it in the admin part of your wordpress installation and when
+	using it in a post), e.g:
+
+		:foo
+	
+	You can check if you have hovers with trailing colons by running the
+	provided checks located under Admin/Plugins/Hover/Check and refer to the
+	"Upgrade" part of the results.

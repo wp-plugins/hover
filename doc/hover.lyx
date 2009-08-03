@@ -1,8 +1,9 @@
-#LyX 1.5.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 276
+#LyX 1.6.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
 \begin_document
 \begin_header
 \textclass scrartcl
+\use_default_options false
 \language english
 \inputencoding auto
 \font_roman default
@@ -13,9 +14,11 @@
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
+
 \graphics default
 \paperfontsize default
 \spacing single
+\use_hyperref false
 \papersize default
 \use_geometry false
 \use_amsmath 1
@@ -38,12 +41,13 @@
 \tracking_changes false
 \output_changes false
 \author "" 
+\author "" 
 \end_header
 
 \begin_body
 
 \begin_layout Title
-Hover v0.6.8
+Hover v0.6.9
 \end_layout
 
 \begin_layout Author
@@ -54,7 +58,7 @@ Stefan Völkel <bd@bc-bd.org>
 \begin_inset ERT
 status open
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -67,7 +71,8 @@ today
 \end_layout
 
 \begin_layout Standard
-\begin_inset LatexCommand tableofcontents
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
 
 \end_inset
 
@@ -89,7 +94,7 @@ Since software development is a highly dynamic process, documentation tends
 \end_layout
 
 \begin_layout Standard
-Right now this document is written for Hover version 0.6.8.
+Right now this document is written for Hover version 0.6.9.
 \end_layout
 
 \begin_layout Subsection
@@ -120,48 +125,61 @@ Features
 
 \begin_layout Enumerate
 Keyword replacing
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Define your own words to be replaced by links or acronyms.
 \end_layout
 
 \begin_layout Enumerate
 Popup
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Mouse over CSS Style Popups can display additional information.
 \end_layout
 
 \begin_layout Enumerate
 Fading
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Popups can be faded in / out / both or not at all.
 \end_layout
 
 \begin_layout Enumerate
 Title replacing
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Replace title attributes from arbitary HTML tags with Popups.
 \end_layout
 
 \begin_layout Enumerate
 Websnapr integration
-\newline
-Provide your visitors with a small screenshot to a website
- you are linking to.
+\begin_inset Newline newline
+\end_inset
+
+Provide your visitors with a small screenshot to a website you are linking
+ to.
 \end_layout
 
 \begin_layout Enumerate
 dynamic Interface
-\newline
-Modify the Admin Interface to fit easily on your screen
- without the need of horizontal scroling.
+\begin_inset Newline newline
+\end_inset
+
+Modify the Admin Interface to fit easily on your screen without the need
+ of horizontal scroling.
 \end_layout
 
 \begin_layout Enumerate
 Selfcontained but flexible
-\newline
-All needed JavaScript (domTT and behaviour.js),
- image and CSS files are included in the archive but can be reconfigured
- or overridden.
+\begin_inset Newline newline
+\end_inset
+
+All needed JavaScript (domTT and behaviour.js), image and CSS files are included
+ in the archive but can be reconfigured or overridden.
 \end_layout
 
 \begin_layout Subsection
@@ -174,7 +192,7 @@ Wordpress 2
 
 \begin_layout Standard
 Hover is a plugin for Wordpress 2 and has been successfully tested with
- these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7, 2.1.0 and 2.1.3
+ these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7, 2.1.0, 2.1.3, 2.2, 2.5, 2.7.1and 2.8.2
 \end_layout
 
 \begin_layout Standard
@@ -183,7 +201,8 @@ It is also known to work with Wordpress MU 1.2.
 
 \begin_layout Subsubsection
 Javascript
-\begin_inset LatexCommand label
+\begin_inset CommandInset label
+LatexCommand label
 name "Requirements:Javascript"
 
 \end_inset
@@ -203,7 +222,9 @@ Some of the features provided by this plugin rely heavily on javascript.
 Popup
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 without javascript title attributes will be generated.
  This leads to a browser based popup on mouseover.
  The downside is, that you are no longer able to define the popups layout.
@@ -215,7 +236,9 @@ without javascript title attributes will be generated.
 Title
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Replacement of title attributes from arbitary HTML tags is performed through
  javascript.
  This script is executed within the browser which enables users who turned
@@ -228,7 +251,9 @@ Replacement of title attributes from arbitary HTML tags is performed through
 Websnapr
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 this service can only be used with the javascript based popups.
 \end_layout
 
@@ -272,8 +297,13 @@ Hover is available at these URLs:
 freshmeat.net:
 \series default
  
-\begin_inset LatexCommand url
-target "http://freshmeat.net/projects/hover/"
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://freshmeat.net/projects/hover/
+\end_layout
 
 \end_inset
 
@@ -286,8 +316,13 @@ target "http://freshmeat.net/projects/hover/"
 blog:
 \series default
  
-\begin_inset LatexCommand url
-target "http://bc-bd.org/"
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://bc-bd.org/
+\end_layout
 
 \end_inset
 
@@ -300,8 +335,13 @@ target "http://bc-bd.org/"
 wp-plugins.net:
 \series default
  
-\begin_inset LatexCommand url
-target "http://wp-plugins.net/plugin/hover/#plugin_2211"
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://wp-plugins.net/plugin/hover/#plugin_2211
+\end_layout
 
 \end_inset
 
@@ -314,8 +354,14 @@ target "http://wp-plugins.net/plugin/hover/#plugin_2211"
 wordpress.softplug.net:
 \series default
  
-\begin_inset LatexCommand url
-target "http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231/Itemid,40/"
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231
+/Itemid,40/
+\end_layout
 
 \end_inset
 
@@ -324,7 +370,8 @@ target "http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/l
 
 \begin_layout Subsection
 Installation
-\begin_inset LatexCommand label
+\begin_inset CommandInset label
+LatexCommand label
 name "sub:Installation"
 
 \end_inset
@@ -356,7 +403,7 @@ Extract Plugin:
 \end_layout
 
 \begin_layout Quotation
-$ tar -xvzf /tmp/hover-0.6.8.tar.gz
+$ tar -xvzf /tmp/hover-0.6.9.tar.gz
 \end_layout
 
 \begin_layout Standard
@@ -364,7 +411,7 @@ Rename folder:
 \end_layout
 
 \begin_layout Quotation
-$ mv hover-0.6.8 hover
+$ mv hover-0.6.9 hover
 \end_layout
 
 \begin_layout Standard
@@ -373,7 +420,8 @@ Login as admin to your Wordpress instance and activate the plugin.
 
 \begin_layout Standard
 Please refer to 
-\begin_inset LatexCommand ref
+\begin_inset CommandInset ref
+LatexCommand ref
 reference "sub:Admin-Interface"
 
 \end_inset
@@ -383,7 +431,8 @@ reference "sub:Admin-Interface"
 
 \begin_layout Subsection
 Upgrade
-\begin_inset LatexCommand label
+\begin_inset CommandInset label
+LatexCommand label
 name "sub:Upgrade"
 
 \end_inset
@@ -393,7 +442,8 @@ name "sub:Upgrade"
 
 \begin_layout Standard
 When upgrading from a former realease install as described 
-\begin_inset LatexCommand eqref
+\begin_inset CommandInset ref
+LatexCommand eqref
 reference "sub:Installation"
 
 \end_inset
@@ -452,7 +502,8 @@ SV_HOVER_
 \begin_layout Enumerate
 Consider writing a short feedback eMail on why you did not want to use Hover
  see 
-\begin_inset LatexCommand ref
+\begin_inset CommandInset ref
+LatexCommand ref
 reference "sub:Feedback"
 
 \end_inset
@@ -462,7 +513,8 @@ reference "sub:Feedback"
 
 \begin_layout Subsection
 Feedback 
-\begin_inset LatexCommand label
+\begin_inset CommandInset label
+LatexCommand label
 name "sub:Feedback"
 
 \end_inset
@@ -489,13 +541,15 @@ Quickstart
 
 \begin_layout Enumerate
 Install 
-\begin_inset LatexCommand eqref
+\begin_inset CommandInset ref
+LatexCommand eqref
 reference "sub:Installation"
 
 \end_inset
 
  or upgrade 
-\begin_inset LatexCommand eqref
+\begin_inset CommandInset ref
+LatexCommand eqref
 reference "sub:Upgrade"
 
 \end_inset
@@ -505,7 +559,8 @@ reference "sub:Upgrade"
 
 \begin_layout Enumerate
 Access Admin interface 
-\begin_inset LatexCommand eqref
+\begin_inset CommandInset ref
+LatexCommand eqref
 reference "sub:Admin-Interface"
 
 \end_inset
@@ -515,7 +570,8 @@ reference "sub:Admin-Interface"
 
 \begin_layout Enumerate
 Create Hover 
-\begin_inset LatexCommand eqref
+\begin_inset CommandInset ref
+LatexCommand eqref
 reference "sub:Examples"
 
 \end_inset
@@ -529,7 +585,8 @@ Features
 
 \begin_layout Subsection
 Admin Interface 
-\begin_inset LatexCommand label
+\begin_inset CommandInset label
+LatexCommand label
 name "sub:Admin-Interface"
 
 \end_inset
@@ -631,7 +688,9 @@ Popup
 Type
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 There are three types available:
 \end_layout
 
@@ -642,7 +701,9 @@ There are three types available:
 abbr
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 The keyword will be placed in <abbr> tags.
 \end_layout
 
@@ -652,7 +713,9 @@ The keyword will be placed in <abbr> tags.
 acronym
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 The keyword will be placed in <acronym> tags.
 \end_layout
 
@@ -662,7 +725,9 @@ The keyword will be placed in <acronym> tags.
 link
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 The keyword will be placed in <a> tags.
 \end_layout
 
@@ -673,7 +738,9 @@ The keyword will be placed in <a> tags.
 Search
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 The keyword to search for
 \end_layout
 
@@ -683,7 +750,9 @@ The keyword to search for
 Link
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 The URL to link to
 \end_layout
 
@@ -693,13 +762,16 @@ The URL to link to
 Popup
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Content of the popup to show on MouseOver.
 \end_layout
 
 \begin_layout Subsection
 Examples:
-\begin_inset LatexCommand label
+\begin_inset CommandInset label
+LatexCommand label
 name "sub:Examples"
 
 \end_inset
@@ -810,13 +882,13 @@ Conditional replacing
 \end_layout
 
 \begin_layout Standard
-Embed your Keyword in colons to enable contional replacment.
+Prefix your Keyword with a colon to enable contional replacment.
 \end_layout
 
 \begin_layout Standard
 Define a Hover by using 
 \series bold
-:foo:
+:foo
 \series default
  in the search field.
  When writing 
@@ -825,10 +897,10 @@ foo
 \series default
  in an article it will not be replaced but when using 
 \series bold
-:foo:
+:foo
 \series default
  in a post it will be.
- The colons will be removed.
+ The colon will be removed.
 \end_layout
 
 \begin_layout Subsection
@@ -838,10 +910,14 @@ Fade
 \begin_layout Standard
 Hover supports all fading options provided by domTT.
  All options defined here will be passed through to domTT, so please refer
- to the domTT 
-\begin_inset LatexCommand url
-name "webpage"
-target "http://www.mojavelinux.com/cooker/demos/domTT/"
+ to the domTT webpage 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.mojavelinux.com/cooker/demos/domTT/
+\end_layout
 
 \end_inset
 
@@ -888,7 +964,9 @@ This section combines all switches that can only be turned on or off
 Use internal css
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Hover comes with a file containing default CSS definitions needed to display
  Hovers correctly.
  You can disable the internal file and provide your own definitions to adapt
@@ -903,10 +981,13 @@ Hover comes with a file containing default CSS definitions needed to display
 Use javascript
 \series default
 :
-\newline
+\begin_inset Newline newline
+\end_inset
+
 Turn off the usage of Javascript alltogether.
  This will disable some features of Hover (see 
-\begin_inset LatexCommand ref
+\begin_inset CommandInset ref
+LatexCommand ref
 reference "Requirements:Javascript"
 
 \end_inset
@@ -920,7 +1001,9 @@ reference "Requirements:Javascript"
 Move to Plugins:
 \series default
 
-\newline
+\begin_inset Newline newline
+\end_inset
+
 This will move the configuration page from Options/Hover to Plugins/Hover
  which will allow editors to alter these options too.
 \end_layout
@@ -929,7 +1012,9 @@ This will move the configuration page from Options/Hover to Plugins/Hover
 
 \series bold
 Use File:
-\newline
+\begin_inset Newline newline
+\end_inset
+
 
 \series default
 When set to on, Hover will write all needed javascript code to a file and
