@@ -33,6 +33,8 @@ Hover is a WordPress plugin that replaces keywords with links and an optional po
 
 Just download and extract to your plugins folder. After activation the options can be found under Plugins/Hover. Please refer to doc/hover.pdf inside the archive more information.
 
+Please refer to the file named UPGRADE when upgrading.
+
 == Frequently Asked Questions ==
 
 Integrated into the configuration page.
