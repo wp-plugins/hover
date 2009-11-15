@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: v0.6.9
+Version: v0.6.10
 
 Released under the GPLv2.
 
@@ -90,7 +90,7 @@ function sv_hover_create_data() {
 
 	foreach ($sv_hover_links as $link){
 		# the search pattern to look for
-		# - first we habe a negative look behind pattern making sure we
+		# - first we have a negative look behind pattern making sure we
 		#   are on a word boundary
 		# - the next negative look behind pattern makes sure we are not
 		#   preceeded by a colon, this is to support conditional
@@ -98,7 +98,7 @@ function sv_hover_create_data() {
 		# - third, the term to search for, e.g. the hover
 		# - fourht, a word boundary to not replace midword
 		# - fifth, a negative look ahead pattern to make sure that no
-		#   dash or colon is following, e.g. hoover-0.6.9.tar.gz
+		#   dash or colon is following, e.g. hoover-0.6.10.tar.gz
 		# - sixth, make sure that we are not inside a html tag, e.g.
 		#   <img src=="http://bc-bd.org/hover/" />
 		$search = "#(?<!&|\w)(?<!:)".
@@ -177,6 +177,7 @@ function sv_hover_header () {
 
 	/* register content filter */
 	add_filter('the_content', 'sv_hover_get', 18);
+	add_filter('widget_text', 'sv_hover_get', 18);
 
 	/* include java script of wanted */
 	if (get_option('SV_HOVER_USEJS') != "0") {
@@ -856,8 +857,8 @@ function sv_hover_check() {
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
-		"Version" => 'v0.6.9',
-		"Commit" => 'd680b5d1d48ecdffd99a4cd934690667f9929527'
+		"Version" => 'v0.6.10',
+		"Commit" => '422420f531f800bb2ef6e33390236bfcd3b6372e'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
