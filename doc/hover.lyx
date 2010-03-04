@@ -47,7 +47,7 @@
 \begin_body
 
 \begin_layout Title
-Hover v0.6.10
+Hover v0.6.11
 \end_layout
 
 \begin_layout Author
@@ -94,7 +94,7 @@ Since software development is a highly dynamic process, documentation tends
 \end_layout
 
 \begin_layout Standard
-Right now this document is written for Hover version 0.6.10.
+Right now this document is written for Hover version 0.6.11.
 \end_layout
 
 \begin_layout Subsection
@@ -192,7 +192,7 @@ Wordpress 2
 
 \begin_layout Standard
 Hover is a plugin for Wordpress 2 and has been successfully tested with
- these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7, 2.1.0, 2.1.3, 2.2, 2.5, 2.7, 2.8.2, 2.8.3, 2.8.5 and 2.8.6.
+ these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7, 2.1.0, 2.1.3, 2.2, 2.5, 2.7, 2.8.2, 2.8.3, 2.8.5, 2.8.6 and 2.9
 \end_layout
 
 \begin_layout Standard
@@ -403,7 +403,7 @@ Extract Plugin:
 \end_layout
 
 \begin_layout Quotation
-$ tar -xvzf /tmp/hover-0.6.10.tar.gz
+$ tar -xvzf /tmp/hover-0.6.11.tar.gz
 \end_layout
 
 \begin_layout Standard
@@ -411,7 +411,7 @@ Rename folder:
 \end_layout
 
 \begin_layout Quotation
-$ mv hover-0.6.10 hover
+$ mv hover-0.6.11 hover
 \end_layout
 
 \begin_layout Standard

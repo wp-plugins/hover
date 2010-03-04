@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: v0.6.10
+Version: git.regex
 
 Released under the GPLv2.
 
@@ -89,26 +89,38 @@ function sv_hover_create_data() {
 		return false;
 
 	foreach ($sv_hover_links as $link){
+		# in case we have a conditional replace we move the colon from
+		# the search term, to the condition.
+		#
+		# we need to do this to support case insensitive replaces, but
+		# keep the original case when replacing
+		if ($link->search[0] == ':') {
+			$cond = ':{1}';
+			$search = substr($link->search, 1);
+		} else {
+			$cond = '';
+			$search = $link->search;
+		}
+
 		# the search pattern to look for
 		# - first we have a negative look behind pattern making sure we
 		#   are on a word boundary
 		# - the next negative look behind pattern makes sure we are not
 		#   preceeded by a colon, this is to support conditional
 		#   replacement
-		# - third, the term to search for, e.g. the hover
-		# - fourht, a word boundary to not replace midword
-		# - fifth, a negative look ahead pattern to make sure that no
-		#   dash or colon is following, e.g. hoover-0.6.10.tar.gz
-		# - sixth, make sure that we are not inside a html tag, e.g.
+		# - pattern for the condional replace, see above
+		# - next, the term to search for, e.g. the hover
+		# - next, a word boundary to not replace midword
+		# - next, a negative look ahead pattern to make sure that no
+		#   dash or colon is following, e.g. hoover-0.6.11.tar.gz
+		# - next, make sure that we are not inside a html tag, e.g.
 		#   <img src=="http://bc-bd.org/hover/" />
 		$search = "#(?<!&|\w)(?<!:)".
-			"$link->search".
+			$cond.'('.$search.')'.
 			"\b(?![-\.]\b)(?![^<>]*?>)#ims";
 
-		# the replace pattern, here we remove any leading colons, in
-		# order to support conditional replacement.
-		$replace = preg_replace('|^:(.*)$|imsU', '$1',
-			$link->search); 
+		# start with replacing with the found term. this keeps case.
+		$replace = '$1';
 
 		$id = 'hover'.$link->id;
 
@@ -152,8 +164,6 @@ function sv_hover_create_data() {
 
 				break;
 		}
-
-		$replace .= '$1';
 
 		$sv_hover_data[$id]->search = $search;
 		$sv_hover_data[$id]->replace = $replace;
@@ -857,8 +867,8 @@ function sv_hover_check() {
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
-		"Version" => 'v0.6.10',
-		"Commit" => '422420f531f800bb2ef6e33390236bfcd3b6372e'
+		"Version" => 'v0.6.11',
+		"Commit" => 'b582a18ee3c5064c45b5797e74119d0eacc0f96e'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
