@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: git.regex
+Version: 0.6.11
 
 Released under the GPLv2.
 
@@ -868,7 +868,7 @@ function sv_hover_check() {
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
 		"Version" => 'v0.6.11',
-		"Commit" => 'b582a18ee3c5064c45b5797e74119d0eacc0f96e'
+		"Commit" => '71130704a50e114f589b0d63cdd81722aa02ddc7'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
