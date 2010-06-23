@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: 0.6.11
+Version: 0.6.12
 
 Released under the GPLv2.
 
@@ -88,6 +88,11 @@ function sv_hover_create_data() {
 	if (count($sv_hover_links) <= 0)
 		return false;
 
+	$blank = '';
+	if (get_option('SV_HOVER_BLANK')) {
+		$blank = 'target="_blank"';
+	}
+
 	foreach ($sv_hover_links as $link){
 		# in case we have a conditional replace we move the colon from
 		# the search term, to the condition.
@@ -112,7 +117,7 @@ function sv_hover_create_data() {
 		# - next, the term to search for, e.g. the hover
 		# - next, a word boundary to not replace midword
 		# - next, a negative look ahead pattern to make sure that no
-		#   dash or colon is following, e.g. hoover-0.6.11.tar.gz
+		#   dash or colon is following, e.g. hoover-0.6.12.tar.gz
 		# - next, make sure that we are not inside a html tag, e.g.
 		#   <img src=="http://bc-bd.org/hover/" />
 		$search = "#(?<!&|\w)(?<!:)".
@@ -154,8 +159,10 @@ function sv_hover_create_data() {
 
 				break;
 			case "link":
-				$replace = '<a class="hover-link" href="'.$link->link.
-					'" '.$title.'><span class="'.$id.'">'.
+				$replace = '<a class="hover-link"'.
+					' href="'.$link->link.'" '.
+					$blank.' '.
+					$title.'><span class="'.$id.'">'.
 					$replace.
 					'</span></a>';
 
@@ -521,7 +528,10 @@ and proxies can cache this file).",
 
 "Move to Plugins:",
 "This will move the configuration page from Options/Hover to Plugins/Hover"
-	." which will allow editors to alter these options too."
+	." which will allow editors to alter these options too.",
+
+"Open in new Window:",
+"Opens links in a new window"
 ));
 
 }
@@ -594,6 +604,7 @@ function sv_hover_update_options() {
 	update_option('SV_HOVER_USEJS', $_POST['js']);
 	update_option('SV_HOVER_MOVE', $_POST['move']);
 	update_option('SV_HOVER_USEFILE', $_POST['file']);
+	update_option('SV_HOVER_BLANK', $_POST['blank']);
 
 	update_option('SV_HOVER_SIZESEARCH', $_POST['SV_HOVER_SIZESEARCH']);
 	update_option('SV_HOVER_SIZELINK', $_POST['SV_HOVER_SIZELINK']);
@@ -867,8 +878,8 @@ function sv_hover_check() {
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
-		"Version" => 'v0.6.11',
-		"Commit" => '71130704a50e114f589b0d63cdd81722aa02ddc7'
+		"Version" => 'v0.6.12',
+		"Commit" => 'fb8386950a0e86040c543c27cc8fa854d919801e'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
@@ -961,6 +972,7 @@ function sv_hover_panel () {
 	sv_boolean_dropdown("js", get_option('SV_HOVER_USEJS'), " Use javascript: ");
 	sv_boolean_dropdown("file", get_option('SV_HOVER_USEFILE'), " Use File: ");
 	sv_boolean_dropdown("move", get_option('SV_HOVER_MOVE'), " Move to Plugins: ");
+	sv_boolean_dropdown("blank", get_option('SV_HOVER_Blank'), " Open in new Window: ");
 
 	sv_hover_qa_switches();
 
@@ -1131,6 +1143,7 @@ sv_hover_add_option('SV_HOVER_USECSS', '1', "Use internal css", 'no');
 sv_hover_add_option('SV_HOVER_USEJS', '1', "Use javascript", 'no');
 sv_hover_add_option('SV_HOVER_USEFILE', '0', "Create Javascript file", 'no');
 sv_hover_add_option('SV_HOVER_MOVE', '1', "Move Page to Plugins", 'yes');
+sv_hover_add_option('SV_HOVER_BLANK', '0', "Open in new window", 'yes');
 
 /* layout options */
 sv_hover_add_option('SV_HOVER_SIZESEARCH', '20x1', "Size of Search Input Field", 'no');
