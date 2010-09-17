@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: 0.6.12
+Version: 0.6.13
 
 Released under the GPLv2.
 
@@ -23,10 +23,11 @@ http://svn.wp-plugins.org/hover/
 /* since 2.5 we need to define those two global, else
  * sv_hover_install is not able to access the needed values
  * see https://bc-bd.org/trac/hover/ticket/13 */
-global $table_prefix, $sv_hover_sql;
+global $table_prefix, $sv_hover_sql, $sv_hover_options;
 
 /* this is where we store our data */
 define('HOVER_TABLE', $table_prefix."hover");
+define('HOVER_IMAGES', HOVER_TABLE."_images");
 define('HOVER_BASE', get_bloginfo('wpurl')."/wp-content/plugins/hover");
 
 define('HOVER_BEHAVIOUR_URL', HOVER_BASE."/behaviour");
@@ -44,10 +45,14 @@ if (get_option('upload_url_path')) {
 	define('HOVER_JS_URL', get_bloginfo('wpurl')."/wp-content/uploads");
 }
 
+define('HOVER_HAS_NONE', 0);
+define('HOVER_HAS_HOVERS', 1);
+define('HOVER_HAS_IMAGES', 2);
+
 $sv_hover_options = array();
 
 /* code needed to create our table */
-$sv_hover_sql = "CREATE TABLE ".HOVER_TABLE." (
+$sv_hover_sql[HOVER_TABLE] = "CREATE TABLE ".HOVER_TABLE." (
 	id mediumint(9) NOT NULL AUTO_INCREMENT,
 	   type tinytext NOT NULL,
 	   search tinytext NOT NULL,
@@ -55,6 +60,15 @@ $sv_hover_sql = "CREATE TABLE ".HOVER_TABLE." (
 	   description text not NULL,
 	   UNIQUE KEY id (id)
 		   );";
+
+$sv_hover_sql[HOVER_IMAGES] = "CREATE TABLE ".HOVER_IMAGES." (
+	id mediumint(9) NOT NULL AUTO_INCREMENT,
+	  src tinytext NOT NULL,
+	  text tinytext NOT NULL,
+	  UNIQUE KEY id (id)
+	);";
+
+define('HOVER_SUBMIT', '<div class="submit"><a href="#wphead">Top</a><input type="submit" name="info_update" value="Update options"/></div>');
 
 /* actual content replacing happens here */
 function sv_hover_get($content) {
@@ -74,26 +88,44 @@ function sv_hover_get($content) {
 	return $content;
 }
 
-/* create needed date here */
-function sv_hover_create_data() {
+function sv_hover_create_images() {
+	global $wpdb, $sv_hover_images;
+
+	$results = $wpdb->get_results(
+		"SELECT id, src, text".
+		" FROM ".HOVER_IMAGES." ORDER BY id"
+	);
+
+	if (count($results) <= 0)
+		return HOVER_HAS_NONE;
+
+	foreach ($results as $img) {
+		$sv_hover_images[$img->id] = sprintf("'%s' : '%s'",
+			$img->src, $img->text);
+	}
+
+	return HOVER_HAS_IMAGES;
+}
+
+function sv_hover_create_hovers() {
 	global $wpdb, $sv_hover_behaviour, $sv_hover_data;
 
 	/* retrieve data from database */
-	$sv_hover_links = $wpdb->get_results(
+	$results = $wpdb->get_results(
 		"SELECT id, search, type, link, description".
 		" FROM ".HOVER_TABLE." ORDER BY id"
 		);
 
-	/* no need to add script, css or filter if there are no links */
-	if (count($sv_hover_links) <= 0)
-		return false;
+	/* no need to add script, css or filter if there is no data */
+	if (count($results) <= 0)
+		return HOVER_HAS_NONE;
 
 	$blank = '';
 	if (get_option('SV_HOVER_BLANK')) {
 		$blank = 'target="_blank"';
 	}
 
-	foreach ($sv_hover_links as $link){
+	foreach ($results as $link){
 		# in case we have a conditional replace we move the colon from
 		# the search term, to the condition.
 		#
@@ -117,7 +149,7 @@ function sv_hover_create_data() {
 		# - next, the term to search for, e.g. the hover
 		# - next, a word boundary to not replace midword
 		# - next, a negative look ahead pattern to make sure that no
-		#   dash or colon is following, e.g. hoover-0.6.12.tar.gz
+		#   dash or colon is following, e.g. hoover-0.6.13.tar.gz
 		# - next, make sure that we are not inside a html tag, e.g.
 		#   <img src=="http://bc-bd.org/hover/" />
 		$search = "#(?<!&|\w)(?<!:)".
@@ -181,7 +213,12 @@ function sv_hover_create_data() {
 			$sv_hover_behaviour[$id] = $desc;
 	}
 
-	return true;
+	return HOVER_HAS_HOVERS;
+}
+
+/* create needed date here */
+function sv_hover_create_data() {
+	return (sv_hover_create_images() | sv_hover_create_hovers());
 }
 
 /* initialize our plugin here */
@@ -189,12 +226,15 @@ function sv_hover_header () {
 	global $sv_hover_behaviour, $wpdb;
 
 	/* create data, skip js inclusion if no data exists */
-	if (!sv_hover_create_data())
+	$result = sv_hover_create_data();
+	echo "<!-- FOO $result ".HOVER_HAS_HOVERS." -->\n";
+	if (!$result)
 		return false;
-
-	/* register content filter */
-	add_filter('the_content', 'sv_hover_get', 18);
-	add_filter('widget_text', 'sv_hover_get', 18);
+	elseif ($result & HOVER_HAS_HOVERS) {
+		/* register content filter */
+		add_filter('the_content', 'sv_hover_get', 18);
+		add_filter('widget_text', 'sv_hover_get', 18);
+	}
 
 	/* include java script of wanted */
 	if (get_option('SV_HOVER_USEJS') != "0") {
@@ -236,7 +276,7 @@ function sv_hover_header () {
 }
 
 function sv_hover_footer_js() {
-	global $sv_hover_behaviour;
+	global $sv_hover_behaviour, $sv_hover_images;
 
 	/* no need to include fading code if it is not enabled */
 	if ("neither" != get_option("SV_HOVER_FADE"))
@@ -245,6 +285,16 @@ function sv_hover_footer_js() {
 			"  'fadeMax', ".get_option("SV_HOVER_FADE_MAX");
 	else
 		$fade = "";
+
+	$line = "\n\n";
+
+	if (count($sv_hover_images) > 0) {
+		$line .= sprintf("var hover_image_map = { \n%s\n };\n\n",
+			implode(",\n", $sv_hover_images));
+
+		$line .= sprintf("hover_images(\"%s\");\n\n",
+				"'trail', true ".$fade);
+	}
 
 	if ("" != get_option('SV_HOVER_REPLACETITLES')) {
 		$line .= sprintf("hover_replaceTitlesByTags('%s', \"%s\");\n\n",
@@ -361,7 +411,7 @@ function sv_hover_display_link($id, $search, $type, $link, $desc,
 	printf('<tr %s>', $a ? 'class="active"' : '');
 	printf('<td align="right" valign="top"><b>p<br/>o<br/>p<br/>u<br/>p</b></td>');
 	printf('<td colspan="3"><textarea name="description%d" %s>%s</textarea>', $id, $size_d, $desc);
-	sv_hover_submit();
+	echo(HOVER_SUBMIT);
 	printf("</tr><tr><td>&nbsp;</td></tr>\n");
 }
 
@@ -464,9 +514,30 @@ mostly indicate a wrong setting in 'Paths'.",
 "An overview of all of Hover's settings including their value. Please include
 them in every BUG report.",
 
-"Database",
-"This is the current database schema."
+"*_hover/*_hover_images",
+"These are the current database schemata."
 ));
+}
+
+function sv_hover_qa_images() {
+	sv_hover_qa_make_list(array(
+"What data do I need to enter?",
+"Put the <i>absolut</i> path of your image into the <b>src</b> textarea and the
+text you'd want to popup into the <b>text</b> textare",
+
+"How is this different from including 'img' in the Switches option?",
+"The latter only takes the title attribute and displays it as a popup. With
+this, you can define the title attribute once, and it will be used for every
+occurance of that image on your blog.",
+
+"This overwrites title attributes I set with the WYSIWYG editor",
+"Yes, that would be a feature.",
+
+"Image popups are not working properly, only a browser based popup is shown",
+"Make sure you have 'img' (without the quotes) included in the <i>Titles</i>
+setting"
+));
+
 }
 
 function sv_hover_qa_maxreplace() {
@@ -553,15 +624,6 @@ xajax.loadingFunction =
 <?php
 }
 
-function sv_hover_submit() {
-?>
-			<div class="submit">
-				<a href="#wphead">Top</a>
-				<input type="submit" name="info_update" value="Update options"/>
-			</div>
-<?php
-}
-
 function sv_hover_draw_table($name, $table) {
 	$line = '
 	<p>
@@ -595,6 +657,7 @@ function sv_hover_subsubmenu() {
 	  <li><a href="#Switches">Switches</a></li>
 	  <li><a href="#Titles">Titles</a></li>
 	  <li><a href="#Websnapr">Websnapr</a></li>
+	  <li><a href="#Images">Images</a></li>
 	 </ul>
 <?php
 }
@@ -649,6 +712,22 @@ function sv_hover_new_hover() {
 	);
 }
 
+function sv_hover_new_image() {
+	global $wpdb;
+
+	$result = $wpdb->query(
+		"INSERT INTO ".HOVER_IMAGES.
+		" (src, text)".
+		" VALUES (".
+			"'".$_POST['src0']."',".
+			"'".$_POST['text0']."'".
+		")"
+	);
+
+	if ($result === FALSE)
+		sv_hover_die('insert');
+}
+
 function sv_hover_update_hovers() {
 	global $wpdb;
 
@@ -672,6 +751,26 @@ function sv_hover_update_hovers() {
 					" type='".$_POST['type'.$id]."',".
 					" link='".$_POST['link'.$id]."',".
 					" description='".$desc."'".
+				" WHERE id='$id'"
+				);
+		}
+}
+
+function sv_hover_update_images() {
+	global $wpdb;
+
+	for($id = 1; $id <= $_POST['maximages']; $id++)
+		if (empty($_POST['src'.$id])) {
+			$result = $wpdb->query(
+				"DELETE FROM ".HOVER_IMAGES.
+				" WHERE id='$id'"
+				);
+		} else {
+			$result = $wpdb->query(
+				"UPDATE ".HOVER_IMAGES.
+				" SET".
+					" src='".$_POST['src'.$id]."',".
+					" text='".$_POST['text'.$id]."',".
 				" WHERE id='$id'"
 				);
 		}
@@ -825,10 +924,15 @@ function sv_hover_check_upload_url() {
 	return $check;
 }
 
-function sv_hover_check_database() {
+function sv_hover_check_database($name) {
 	global $wpdb;
 
-	$describe = $wpdb->get_results("DESCRIBE ".HOVER_TABLE);
+	if ($wpdb->get_var("show tables like '$name'") != $name) {
+		$db['ERROR'] = "Table $name missing?!";
+		return $db;
+	}
+
+	$describe = $wpdb->get_results("DESCRIBE $name");
 
 	foreach($describe as $d)
 		$db[$d->Field] = $d->Type;
@@ -862,7 +966,7 @@ function sv_hover_check_ticket($id, $reason) {
 }
 
 function sv_hover_check() {
-	global $sv_hover_options;
+	global $sv_hover_options, $sv_hover_sql;
 
 	$common = array(
 		"HOVER_BASE" => HOVER_BASE,
@@ -878,8 +982,8 @@ function sv_hover_check() {
 
 	$table = array(
 		"DB" => get_option('SV_HOVER_VERSION'),
-		"Version" => 'v0.6.12',
-		"Commit" => 'fb8386950a0e86040c543c27cc8fa854d919801e'
+		"Version" => 'v0.6.13',
+		"Commit" => '40d8ba1dd9c0224627a995aad15ff8e02907d85f'
 	);
 
 	$line .= sv_hover_draw_table("Versions", $table);
@@ -888,6 +992,7 @@ function sv_hover_check() {
 	$line .= sv_hover_draw_table("Javascript", $javascript);
 
 	$options['TABLE'] = HOVER_TABLE;
+	$options['IMAGES'] = HOVER_IMAGES;
 	foreach ($sv_hover_options as $opt)
 		$options{$opt} = get_option($opt);
 
@@ -898,8 +1003,10 @@ function sv_hover_check() {
 	$url = sv_hover_check_upload_url();
 	$line .= sv_hover_draw_table("Upload Checks", $url);
 
-	$db = sv_hover_check_database();
-	$line .= sv_hover_draw_table("Database", $db);
+	foreach ($sv_hover_sql as $name => $sql) {
+		$db = sv_hover_check_database($name);
+		$line .= sv_hover_draw_table($name, $db);
+	}
 
 	$db = sv_hover_check_upgrade();
 	$line .= sv_hover_draw_table("Upgrade", $db);
@@ -909,6 +1016,74 @@ function sv_hover_check() {
 
 	return $response;
 }
+
+function sv_hover_images() {
+	global $wpdb;
+
+	$size = 'rows="2" cols="80%"';
+
+	$images = $wpdb->get_results(
+		"SELECT id, src, text".
+		" FROM ".HOVER_IMAGES.
+		" ORDER BY src");
+
+	$maxid = $wpdb->get_var(
+		"SELECT max(id)".
+		" FROM ".HOVER_IMAGES);
+
+	echo '<input type="hidden" name="maximages" value="'.$maxid.'"/>';
+
+	sv_fieldset_start("Images");
+?>
+	<table border="1" cellspacing="0">
+		<tr align="center">
+			<td><b>id</b></td>
+			<td colspan="2"><b>data</b></td>
+		</tr>
+<?php
+
+	printf('
+		<tr>
+		 <td rowspan="2">
+		  %d
+		 </td>
+		 <td align="right"><b>src</b></td>
+		 <td><textarea name="src%d" %s>%s</textarea></td>
+		</tr>
+		<tr>
+		 <td><b>text</b></td>
+		 <td><textarea name="text%d" %s>%s</textarea></td>
+		</tr>
+		<tr>
+		 <td></td>
+		 <td colspan="2">'.HOVER_SUBMIT.'</td>
+		</tr>'."\n",
+		0, 0, $size, '', 0, $size, '');
+
+	foreach ($images as $i) {
+		printf('
+			<tr>
+			 <td rowspan="2">
+			  %d
+			 </td>
+			 <td align="right"><b>src</b></td>
+			 <td><textarea name="src%d" %s>%s</textarea></td>
+			</tr>
+			<tr>
+			 <td><b>text</b></td>
+			 <td><textarea name="text%d" %s>%s</textarea></td>
+			<tr>
+			 <td></td>
+			 <td colspan="2">'.HOVER_SUBMIT.'</td>
+			</tr>'."\n",
+			$i->id, $i->id, $size, $i->src, $i->id, $size, $i->text);
+	}
+
+	echo("</table>");
+
+	sv_hover_qa_images();
+	sv_fieldset_end();
+};
 
 /* our admin function, called from the options page */
 function sv_hover_panel () {
@@ -934,6 +1109,11 @@ function sv_hover_panel () {
 	/* update hovers */
 	sv_hover_update_hovers();
 
+	if (!empty($_POST['src0']))
+		sv_hover_new_image();
+
+	sv_hover_update_images();
+
 	sv_hover_handle_file();
 ?>
 				Updated options.
@@ -951,6 +1131,8 @@ function sv_hover_panel () {
 <?php
 	sv_hover_hovers();
 
+	sv_hover_images();
+
 	sv_fieldset_start("Maxreplace");
 
 ?>
@@ -964,7 +1146,7 @@ function sv_hover_panel () {
 	sv_hover_qa_maxreplace();
 
 	sv_fieldset_end();
-	sv_hover_submit();
+	echo(HOVER_SUBMIT);
 
 	sv_fieldset_start("Switches");
 
@@ -977,7 +1159,7 @@ function sv_hover_panel () {
 	sv_hover_qa_switches();
 
 	sv_fieldset_end();
-	sv_hover_submit();
+	echo(HOVER_SUBMIT);
 
 	sv_fieldset_start("Fade");
 ?>
@@ -992,7 +1174,7 @@ function sv_hover_panel () {
 	
 	sv_hover_option_to_input('Max', 'SV_HOVER_FADE_MAX');
 	sv_fieldset_end();
-	sv_hover_submit();
+	echo(HOVER_SUBMIT);
 
 	sv_fieldset_start("Titles");
 ?>
@@ -1004,7 +1186,7 @@ function sv_hover_panel () {
 	sv_hover_qa_titles();
 
 	sv_fieldset_end();
-	sv_hover_submit();
+	echo(HOVER_SUBMIT);
 
 	sv_fieldset_start("Websnapr");
 ?>
@@ -1021,7 +1203,7 @@ function sv_hover_panel () {
 	sv_hover_qa_links();
 
 	sv_fieldset_end();
-	sv_hover_submit();
+	echo(HOVER_SUBMIT);
 
 	sv_fieldset_start("Interface");
 	sv_hover_option_to_input('Search', 'SV_HOVER_SIZESEARCH');
@@ -1029,7 +1211,7 @@ function sv_hover_panel () {
 	sv_hover_option_to_input('Popup', 'SV_HOVER_SIZEDESCRIPTION');
 	sv_hover_qa_interface();
 	sv_fieldset_end();
-	sv_hover_submit();
+	echo(HOVER_SUBMIT);
 ?>
 
 		</form>
@@ -1080,33 +1262,44 @@ function sv_hover_admin() {
 function sv_hover_die($text, $sql = "none") {
 	global $sv_hover_sql;
 
-	die("
+	foreach ($sv_hover_sql as $sql) {
+		$line .= sprintf("<pre>%s</pre>\n", $sql);
+	}
+
+	wp_die("
 	<p>Oops, hover encountered an error</p>
 	<div>context:'$text'</div>
 	<div>sql:'$sql'</div>
 	<div>mysql_error():'".mysql_error()."'</div>
-	<p>Please check your database for a valid hover table. The code needed to
-	create it is: <pre>'".$sv_hover_sql."'</pre></p>".sv_hover_check());
+	<p>Please check your database for hover tables. The code needed to
+	create them is: $line</p>");
 }
 
 /* called on plugin activation */
 function sv_hover_install () {
 	global $wpdb, $sv_hover_sql;
 
-	/* does or table exist */
-	if ($wpdb->get_var("show tables like '".HOVER_TABLE."'") != HOVER_TABLE) {
-		$wpdb->query($sv_hover_sql);
-		update_option('SV_HOVER_VERSION', 1);
+	foreach ($sv_hover_sql as $name => $sql) {
+		if ($wpdb->get_var("show tables like '$name'") == $name)
+			continue;
+
+		$result = $wpdb->query($sql);
+		if ($result === FALSE)
+			sv_hover_die("Could not create table $name", $sql);
 	}
 
 	if (0 == get_option('SV_HOVER_VERSION')) {
 		$alter = "ALTER table ".HOVER_TABLE." add type tinytext NOT NULL";
-		$wpdb->query($alter) or sv_hover_die("Could not update table",
-			$alter);
+		$result = $wpdb->query($alter);
+
+		if ($result === FALSE)
+			sv_hover_die("Could not update table", $alter);
 
 		$update = "UPDATE ".HOVER_TABLE." set type='link'";
-		$wpdb->query($update) or sv_hover_die("Could not update table",
-			$update);
+		$result = $wpdb->query($update);
+
+		if ($result === FALSE)
+			sv_hover_die("Could not update table", $update);
 
 		update_option('SV_HOVER_VERSION', 1);
 	}
@@ -1116,6 +1309,10 @@ function sv_hover_install () {
 		delete_option('SV_HOVER_PATH_DOMTT');
 
 		update_option('SV_HOVER_VERSION', 2);
+	}
+
+	if (2 == get_option('SV_HOVER_VERSION')) {
+		update_option('SV_HOVER_VERSION', 3);
 	}
 }
 
@@ -1136,7 +1333,7 @@ add_action('admin_head', 'sv_hover_panel_head');
 add_action('wp_head', 'sv_hover_header');
 
 /* internal options */
-sv_hover_add_option('SV_HOVER_VERSION', '1', 'Database schema version', 'no');
+sv_hover_add_option('SV_HOVER_VERSION', '3', 'Database schema version', 'no');
 
 /* generic functional options */
 sv_hover_add_option('SV_HOVER_USECSS', '1', "Use internal css", 'no');
