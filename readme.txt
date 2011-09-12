@@ -2,8 +2,8 @@
 Contributors: svoelkel
 Tags: hover, popup, domTT
 Requires at least: 2.0.2
-Tested up to: 3.0.1
-Stable tag: hover-0.6.13
+Tested up to: 3.2.1
+Stable tag: hover-0.7.0
 
 Hover is a WordPress plugin that replaces keywords with links and an optional popup
 
@@ -18,7 +18,6 @@ Hover is a WordPress plugin that replaces keywords with links and an optional po
  * domTT v0.7.3 by Dan Allen for browser compatible popup creation
  * Behaviour v1.1 by Ben Nolan to clean up HTML markup
 * Options page integrated into WordPress admin menu
-* Websnapr integration
 * support for <abbr> and <acronym>
 * support for conditional replacing
 * support for title attribute replacing

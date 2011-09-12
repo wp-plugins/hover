@@ -14,16 +14,6 @@ fieldset legend {
 	text-decoration: underline;
 }
 
-.hidden {
-	visibility: hidden;
-	display: none;
-}
-
-.visible {
-	visibility: visible;
-	display: block;
-}
-
 .qa ul {
 	margin: 0;
 	padding: 0;
