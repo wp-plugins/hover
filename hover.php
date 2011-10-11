@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: 0.7.0
+Version: 0.7.2
 
 Released under the GPLv2.
 
@@ -98,7 +98,7 @@ function sv_hover_create_hovers() {
 		return HOVER_HAS_NONE;
 
 	$blank = '';
-	if ($sv_hover_options{blank})
+	if ($sv_hover_options{'blank'})
 		$blank = 'target="_blank"';
 
 	foreach ($results as $link){
@@ -138,8 +138,10 @@ function sv_hover_create_hovers() {
 		$id = 'hover'.$link->id;
 
 		/* If javascript is disabled, we set the title attribute */
-		if ($sv_hover_options{usejs} == "0")
+		if ($sv_hover_options{'usejs'} == "0")
 			$title = " title=\"$link->description\" ";
+		else
+			$title = "";
 
 		$websnapr = "";
 
@@ -171,7 +173,7 @@ function sv_hover_create_hovers() {
 					$replace.
 					'</span></a>';
 
-				if ($sv_hover_options{websnapr_link})
+				if ($sv_hover_options{'websnapr_link'})
 					$desc .= $websnapr;
 
 				break;
@@ -182,7 +184,7 @@ function sv_hover_create_hovers() {
 		$sv_hover_data[$id]->type = $link->type;
 
 		// reference java script on mouse events
-		if ($sv_hover_options{usejs} != "0")
+		if ($sv_hover_options{'usejs'} != "0")
 			$sv_hover_behaviour[$id] = $desc;
 	}
 
@@ -209,7 +211,7 @@ function sv_hover_header () {
 	}
 
 	/* include java script of wanted */
-	if ($sv_hover_options{usejs} == 1) {
+	if ($sv_hover_options{'usejs'} == 1) {
 		add_action('wp_footer', 'sv_hover_footer');
 
 		echo '<script type="text/javascript" src="'.
@@ -224,7 +226,7 @@ function sv_hover_header () {
 			'/domTT.js"></script>'."\n";
 
 		/* no need to include fading if it is not enabled */
-		if ("neither" != $sv_hover_options{fade}) {
+		if ("neither" != $sv_hover_options{'fade'}) {
 			echo '<script type="text/javascript" src="'.
 				HOVER_DOMTT_URL.
 				'/fadomatic.js"></script>'."\n";
@@ -241,7 +243,7 @@ function sv_hover_header () {
 	}
 
 	/* include css if wanted */
-	if ($sv_hover_options{usecss}) {
+	if ($sv_hover_options{'usecss'}) {
 		echo '<link type="text/css" rel="stylesheet" href="'.
 			HOVER_BASE.'/hover.css" />'."\n";
 	}
@@ -318,7 +320,7 @@ function sv_hoover_footer_js_writefile() {
 function sv_hover_footer($footer) {
 	global $sv_hover_options;
 
-	if ($sv_hover_options{usefile} && is_file(HOVER_JS_FILE)) {
+	if ($sv_hover_options{'usefile'} && is_file(HOVER_JS_FILE)) {
 		echo '<script type="text/javascript" src="'.
 			HOVER_JS_URL.'/hover.js'.
 			'"></script>'."\n";
@@ -335,6 +337,13 @@ function sv_hover_footer($footer) {
 	}
 }
 
+/* called on plugin activation */
+function sv_hover_install () {
+	global $wpdb;
+
+	@include('inc/activate.php');
+}
+
 if (is_admin()) {
 	@include('inc/admin.php');
 
@@ -344,6 +353,9 @@ if (is_admin()) {
 	/* register head hook */
 	add_action('wp_head', 'sv_hover_header');
 }
+
+/* register activation and options hooks */
+register_activation_hook(WP_PLUGIN_DIR.'/hover/hover.php', 'sv_hover_install');
 
 $sv_hover_options = get_option('SV_HOVER');
 ?>

@@ -215,6 +215,22 @@ thus a Hover found in two postings will be replaced one time per posting.",
 
 }
 
+function sv_hover_qa_maintenance() {
+	sv_hover_qa_make_list(array(
+"What does 'delete options' do?",
+"This will delete all options for hover. Your links, etc will not be touched,
+but everything else will be unset. You will need to deactivate/activate hover,
+before it will work again",
+
+"What does 'Drop Hover Table' do?",
+"This will DELETE all your configured hovers. No recovery possible.",
+
+"What does 'Drop Hover Images Table' do?",
+"This will DELETE all your configured images. No recovery possible.",
+));
+
+}
+
 function sv_hover_qa_interface() {
 	sv_hover_qa_make_list(array(
 "What are these settings for?",
@@ -248,10 +264,6 @@ javascript in your uploads directory and include this into your blog via link.
 This will save CPU cycles (only create needed code once) and bandwidth (clients
 and proxies can cache this file).",
 
-"Move to Plugins:",
-"This will move the configuration page from Options/Hover to Plugins/Hover"
-	." which will allow editors to alter these options too.",
-
 "Open in new Window:",
 "Opens links in a new window"
 ));
@@ -282,6 +294,8 @@ function sv_hover_draw_table($name, $table) {
 	 <blockquote>
 	  <table>';
 
+	$a = false;
+
 	foreach (array_keys($table) as $i) {
 		$line .= sprintf("<tr %s><td><b>%s</b></td><td>%s</td></tr>\n",
 			$a ? '' : 'class="active"', $i, $table{$i});
@@ -305,6 +319,7 @@ function sv_hover_subsubmenu() {
 	  <li><a href="#Hovers">Hovers</a></li>
 	  <li><a href="#Interface">Interface</a></li>
 	  <li><a href="#Maxreplace">Maxreplace</a></li>
+	  <li><a href="#Maintenance">Maintenance</a></li>
 	  <li><a href="#Switches">Switches</a></li>
 	  <li><a href="#Titles">Titles</a></li>
 	  <li><a href="#Websnapr">Websnapr</a></li>
@@ -320,7 +335,6 @@ function sv_hover_update_options() {
 		usecss => $_POST['usecss'],
 		usejs => $_POST['usejs'],
 		usefile => $_POST['usefile'],
-		move => $_POST['move'],
 		blank => $_POST['blank'],
 
 		size_search => $_POST['size_search'],
@@ -487,7 +501,9 @@ function sv_hover_hovers() {
 		$size_search, $size_link, $size_description, 1);
 
 	/* display all exising links */
-	if (!empty($categories)) 
+	if (!empty($categories)) {
+		$a = false;
+
 		foreach ($categories as $cat) {
 			$desc = preg_replace('|<br/>|', "\r\n", $cat->description);
 			sv_hover_display_link(
@@ -499,6 +515,7 @@ function sv_hover_hovers() {
 			 * for readability */
 			$a = !$a;
 		}
+	}
 ?>
 				</table>
 <?php
@@ -552,7 +569,7 @@ function sv_hover_check_javascript() {
 
 	# this is kind of evil since we first perform the check and then
 	# hide the error if USEFILE is disabled.
-	if ( !$sv_hover_options{usefile} ) {
+	if ( !$sv_hover_options{'usefile'} ) {
 		$checks{$f} = "disabled";
 	}
 
@@ -562,9 +579,7 @@ function sv_hover_check_javascript() {
 function sv_hover_check_upload_url() {
 	global $wpdb, $sv_hover_options;
 
-	$describe = $wpdb->get_results("DESCRIBE ".HOVER_TABLE);
-
-	if ($sv_hover_options{usefile})
+	if ($sv_hover_options{'usefile'})
 		$check["usefile"] = "True, the following checks apply to you.";
 	else
 		$check["usefile"] = "False, you can ignore the following checks and possible warning messages";
@@ -602,11 +617,17 @@ function sv_hover_check_database($name) {
 function sv_hover_check_upgrade() {
 	global $wpdb;
 
+	if ($wpdb->get_var("show tables like '".HOVER_TABLE."'") != HOVER_TABLE) {
+		$db['ERROR'] = "Table ".HOVER_TABLE." missing?!";
+		return $db;
+	}
+
 	$colons = $wpdb->get_results(
 		"SELECT search".
 		" FROM ".HOVER_TABLE." WHERE search LIKE ':%:'"
 		);
 
+	$db = array();
 	foreach ($colons as $c) {
 		$db["Colons ".$c->search] = "Found, please remove training colon";
 	}
@@ -642,12 +663,12 @@ function sv_hover_check() {
 	);
 
 	$table = array(
-		"DB" => $sv_hover_options{version},
-		"Version" => '0.7.0',
-		"Commit" => 'a81041ec15fe48c991bc631a73c0d834c8d90ec6'
+		"DB" => $sv_hover_options{'version'},
+		"Version" => '0.7.2',
+		"Commit" => '92378f8f9ea108f263bbe6f21bf779ac8eb2a528'
 	);
 
-	$line .= sv_hover_draw_table("Versions", $table);
+	$line = sv_hover_draw_table("Versions", $table);
 
 	$javascript = sv_hover_check_javascript();
 	$line .= sv_hover_draw_table("Javascript", $javascript);
@@ -672,6 +693,46 @@ function sv_hover_check() {
 
 	$response = new xajaxResponse();
 	$response->assign("check", "innerHTML", $line);
+
+	return $response;
+}
+
+function sv_hover_maintenance_options() {
+	if (!is_admin())
+		return;
+
+	delete_option('SV_HOVER');
+
+	$response = new xajaxResponse();
+	$response->script('alert("Options deleted")');
+
+	return $response;
+}
+
+function sv_hover_maintenance_drop() {
+	global $wpdb;
+
+	if (!is_admin())
+		return;
+
+	$wpdb->query('DROP TABLE '.HOVER_TABLE);
+
+	$response = new xajaxResponse();
+	$response->script('alert("Hover table dropped")');
+
+	return $response;
+}
+
+function sv_hover_maintenance_drop_images() {
+	global $wpdb;
+
+	if (!is_admin())
+		return;
+
+	$wpdb->query('DROP TABLE '.HOVER_IMAGES);
+
+	$response = new xajaxResponse();
+	$response->script('alert("Images Table dropped")');
 
 	return $response;
 }
@@ -807,12 +868,30 @@ function sv_hover_panel () {
 	sv_fieldset_end();
 	echo(HOVER_SUBMIT);
 
+	sv_fieldset_start("Maintenance");
+
+?>
+			<p>Maintenance tools. <strong>WARNING</strong>: Be sure
+			to read the Q&A first. Seriously.</p>
+
+		<a onClick="xajax_sv_hover_maintenance_options();" class="ajax">
+		Delete options</a><br/>
+		<a onClick="xajax_sv_hover_maintenance_drop();" class="ajax">
+		Drop Hover Table</a><br/>
+		<a onClick="xajax_sv_hover_maintenance_drop_images();" class="ajax">
+		Drop Hover Images Table</a><br/>
+<?php
+
+	sv_hover_qa_maintenance();
+
+	sv_fieldset_end();
+	echo(HOVER_SUBMIT);
+
 	sv_fieldset_start("Switches");
 
 	sv_boolean_dropdown("usecss", " Use internal css: ");
 	sv_boolean_dropdown("usejs", " Use javascript: ");
 	sv_boolean_dropdown("usefile", " Use File: ");
-	sv_boolean_dropdown("move", " Move to Plugins: ");
 	sv_boolean_dropdown("blank", " Open in new Window: ");
 
 	sv_hover_qa_switches();
@@ -828,7 +907,7 @@ function sv_hover_panel () {
 
 				use fade effect for: 
 <?php
-	sv_multi_dropdown("fade", $sv_hover_options{fade},
+	sv_multi_dropdown("fade", $sv_hover_options{'fade'},
 		array("in", "out", "neither", "both"));
 	
 	sv_hover_option_to_input('Max', 'fademax');
@@ -898,6 +977,9 @@ function sv_hover_xajax() {
 
 	$xajax = new xajax();
 	$xajax->register(XAJAX_FUNCTION, "sv_hover_check");
+	$xajax->register(XAJAX_FUNCTION, "sv_hover_maintenance_options");
+	$xajax->register(XAJAX_FUNCTION, "sv_hover_maintenance_drop");
+	$xajax->register(XAJAX_FUNCTION, "sv_hover_maintenance_drop_images");
 	$xajax->processRequest();
 }
 
@@ -906,13 +988,8 @@ function sv_hover_admin() {
 	global $sv_hover_options;
 
 	sv_hover_xajax();
-	if ($sv_hover_options{move}) {
-		if (function_exists('add_submenu_page'))
-			add_submenu_page('plugins.php', 'Hover', 'Hover', 1,
-				basename(__FILE__), 'sv_hover_panel');
-	} else
-		if (function_exists('add_options_page'))
-			add_options_page('Hover', 'Hover', 8, basename(__FILE__), 'sv_hover_panel');
+	add_plugins_page('Hover', 'Hover', 'activate_plugins', 'hover', 'sv_hover_panel');
+
 }
 
 function sv_hover_die($text, $error = "none") {
@@ -931,20 +1008,12 @@ function sv_hover_die($text, $error = "none") {
 	create them is: $line</p>");
 }
 
-/* called on plugin activation */
-function sv_hover_install () {
-	global $wpdb;
-
-	@include('inc/activate.php');
-}
-
 add_option('SV_HOVER', array(
-	version => 4,
+	version => 5,
 
 	usecss => 1,
 	usejs => 1,
 	usefile => 0,
-	move => 1,
 	blank => 0,
 
 	size_search => '20x1',
@@ -964,8 +1033,6 @@ add_option('SV_HOVER', array(
 	maxreplace_link => -1,
 	) , '', 'no');
 
-/* register activation and options hooks */
-add_action('activate_hover/hover.php','sv_hover_install');
 add_action('admin_menu', 'sv_hover_admin');
 add_action('admin_head', 'sv_hover_panel_head');
 

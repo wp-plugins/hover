@@ -1,4 +1,4 @@
-#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+#LyX 1.6.4 created this file. For more info see http://www.lyx.org/
 \lyxformat 345
 \begin_document
 \begin_header
@@ -29,6 +29,10 @@
 \cite_engine basic
 \use_bibtopic false
 \paperorientation portrait
+\branch deactivated
+\selected 0
+\color #faf0e6
+\end_branch
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation skip
@@ -50,7 +54,7 @@
 \begin_body
 
 \begin_layout Title
-Hover v0.7.0
+Hover v0.7.2
 \end_layout
 
 \begin_layout Author
@@ -97,7 +101,7 @@ Since software development is a highly dynamic process, documentation tends
 \end_layout
 
 \begin_layout Standard
-Right now this document is written for Hover version 0.7.0.
+Right now this document is written for Hover version 0.7.2.
 \end_layout
 
 \begin_layout Subsection
@@ -215,13 +219,12 @@ Requirements
 \end_layout
 
 \begin_layout Subsubsection
-Wordpress 2
+Wordpress 3
 \end_layout
 
 \begin_layout Standard
-Hover is a plugin for Wordpress 2 and has been successfully tested with
- these versions: 2.0.2, 2.0.4, 2.0.6, 2.0.7, 2.1.0, 2.1.3, 2.2, 2.5, 2.7, 2.8.2, 2.8.3, 2.8.5,
- 2.8.6, 2.9, 3.0.0, 3.0.1 and 3.2.1.
+Hover is a plugin for Wordpress 3 and has been successfully tested with
+ these versions: 3.0.0, 3.0.1 and 3.2.1.
 \end_layout
 
 \begin_layout Standard
@@ -272,9 +275,12 @@ Replacement of title attributes from arbitary HTML tags is performed through
  javascript.
  This script is executed within the browser which enables users who turned
  of javascript to at least see the browser based popups.
-\end_layout
+\series bold
 
-\begin_layout Enumerate
+\begin_inset Branch deactivated
+status open
+
+\begin_layout Standard
 
 \series bold
 Websnapr
@@ -286,6 +292,11 @@ Websnapr
 this service can only be used with the javascript based popups.
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 All needed javascript files are included (domTT and behaviour.js).
 \end_layout
@@ -295,7 +306,7 @@ Database
 \end_layout
 
 \begin_layout Standard
-Hover will store it's data in a seperate table in your database thus you
+Hover will store it's data in seperate tables in your database thus you
  need the privilege to create tables in your database.
 \end_layout
 
@@ -358,45 +369,6 @@ http://bc-bd.org/
 
 \end_layout
 
-\begin_layout Itemize
-
-\series bold
-wp-plugins.net:
-\series default
- 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-http://wp-plugins.net/plugin/hover/#plugin_2211
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-
-\series bold
-wordpress.softplug.net:
-\series default
- 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-http://wordpress.softplug.net/component/option,com_mtree/task,viewlink/link_id,231
-/Itemid,40/
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
 Installation
 \begin_inset CommandInset label
@@ -432,7 +404,7 @@ Extract Plugin:
 \end_layout
 
 \begin_layout Quotation
-$ tar -xvzf /tmp/hover-0.7.0.tar.gz
+$ tar -xvzf /tmp/hover-0.7.2.tar.gz
 \end_layout
 
 \begin_layout Standard
@@ -440,7 +412,7 @@ Rename folder:
 \end_layout
 
 \begin_layout Quotation
-$ mv hover-0.7.0 hover
+$ mv hover-0.7.2 hover
 \end_layout
 
 \begin_layout Standard
@@ -492,15 +464,19 @@ To completely remove Hover from your system you need to follow the steps
 \end_layout
 
 \begin_layout Standard
-The safest way is to simply deactivate the plugin (Step 1).
- If you are desperadly in need of space and know what you are doing you
- can remove the folder containg all of hovers files (Step 2).
+The safest way is to simply deactivate the plugin.
+ If you are in need of space and know what you are doing you can remove
+ the folder containg all of hovers files (Step 3).
 \end_layout
 
-\begin_layout Standard
-Steps 3 and 4 should only be performed by experienced users.
- You have been warned.
- Really.
+\begin_layout Enumerate
+Under Maintenance, run 'Delete options', 'Drop Hover Table' and 'Drop Hover
+ Images Table'.
+ 
+\series bold
+Warning
+\series default
+: this will delete all your configured options and hovers.
 \end_layout
 
 \begin_layout Enumerate
@@ -509,23 +485,6 @@ Deactivate Plugin.
 
 \begin_layout Enumerate
 Remove Hover folder from your plugins directory.
-\end_layout
-
-\begin_layout Enumerate
-Drop Hover table (default wp_hover).
-\end_layout
-
-\begin_layout Enumerate
-Delete Hover options from wp_options table (all options are starting with
- the string 
-\begin_inset Quotes eld
-\end_inset
-
-SV_HOVER_
-\begin_inset Quotes erd
-\end_inset
-
-).
 \end_layout
 
 \begin_layout Enumerate
@@ -1027,19 +986,6 @@ reference "Requirements:Javascript"
 \begin_layout Enumerate
 
 \series bold
-Move to Plugins:
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-This will move the configuration page from Options/Hover to Plugins/Hover
- which will allow editors to alter these options too.
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
 Use File:
 \begin_inset Newline newline
 \end_inset
@@ -1051,6 +997,18 @@ When set to on, Hover will write all needed javascript code to a file and
  This enables client side caching thus leading to saved bandwidth on your
  side.
  As a bonus it also uses less CPU.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Open in new Window:
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Opens links in a new window.
 \end_layout
 
 \begin_layout Subsection
@@ -1077,6 +1035,10 @@ This feature is commonly used with <img> tags:
  through enabling this switch Hover will replace those browser based popups
  with its own, granting the same look and feel on all popups.
 \end_layout
+
+\begin_layout Standard
+\begin_inset Branch deactivated
+status open
 
 \begin_layout Subsection
 Websnapr
@@ -1107,6 +1069,11 @@ Hover includes a small spinner displayed while loading the screenshot:
 \begin_inset Graphics
 	filename images/spinner.png
 	width 90col%
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
