@@ -85,4 +85,13 @@ if (3 == $version) {
 		delete_option($option);
 } // 3 == $version
 
+if (4 == $version) {
+	$sv_hover_options = get_option('SV_HOVER');
+
+	unset($sv_hover_options{move});
+	$sv_hover_options{version} = 5;
+
+	update_option('SV_HOVER', $sv_hover_options, "Hover's options", 'no');
+}
+
 ?>
