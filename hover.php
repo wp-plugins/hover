@@ -5,7 +5,7 @@ Plugin URI: http://bc-bd.org/blog/?page_id=48
 Description: Replaces keywords with links and optional onmouseover() popups.  Something not working? Send me some <a href="mailto:bd@bc-bd.org">FEEDBACK</a>. <strong>Upgrading?</strong> Make sure to read the file named UPGRADE in the archive.
 Author: Stefan V&ouml;lkel
 Author URI: http://bc-bd.org
-Version: 0.7.2
+Version: 0.7.3
 
 Released under the GPLv2.
 
@@ -26,6 +26,8 @@ http://svn.wp-plugins.org/hover/
 global $table_prefix, $sv_hover_options;
 
 /* this is where we store our data */
+define('HOVER_PATH', plugin_dir_path(__FILE__) );
+
 define('HOVER_TABLE', $table_prefix."hover");
 define('HOVER_IMAGES', HOVER_TABLE."_images");
 define('HOVER_BASE', get_bloginfo('wpurl')."/wp-content/plugins/hover");
@@ -33,17 +35,9 @@ define('HOVER_BASE', get_bloginfo('wpurl')."/wp-content/plugins/hover");
 define('HOVER_BEHAVIOUR_URL', HOVER_BASE."/behaviour");
 define('HOVER_DOMTT_URL', HOVER_BASE."/domTT");
 
-if (substr(get_option('upload_path'),0 , 1) == "/") {
-	define('HOVER_JS_FILE', get_option("upload_path")."/"."hover.js");
-} else {
-	define('HOVER_JS_FILE', ABSPATH."/".get_option("upload_path")."/hover.js");
-}
-
-if (get_option('upload_url_path')) {
-	define('HOVER_JS_URL', get_option('upload_url_path'));
-} else {
-	define('HOVER_JS_URL', get_bloginfo('wpurl')."/wp-content/uploads");
-}
+$upload = wp_upload_dir();
+define('HOVER_JS_FILE', $upload['basedir']."/hover.js");
+define('HOVER_JS_URL', $upload['baseurl']);
 
 define('HOVER_HAS_NONE', 0);
 define('HOVER_HAS_HOVERS', 1);
@@ -143,8 +137,6 @@ function sv_hover_create_hovers() {
 		else
 			$title = "";
 
-		$websnapr = "";
-
 		$desc = $link->description;
 
 		// and build together our hover
@@ -161,9 +153,6 @@ function sv_hover_create_hovers() {
 					$replace.
 					'</span></acronym>';
 
-				if ($sv_hover_options{websnapr_acronym})
-					$desc .= $websnapr;
-
 				break;
 			case "link":
 				$replace = '<a class="hover-link"'.
@@ -173,12 +162,10 @@ function sv_hover_create_hovers() {
 					$replace.
 					'</span></a>';
 
-				if ($sv_hover_options{'websnapr_link'})
-					$desc .= $websnapr;
-
 				break;
 		}
 
+		$sv_hover_data[$id] = new stdClass();
 		$sv_hover_data[$id]->search = $search;
 		$sv_hover_data[$id]->replace = $replace;
 		$sv_hover_data[$id]->type = $link->type;
@@ -253,10 +240,10 @@ function sv_hover_footer_js() {
 	global $sv_hover_options, $sv_hover_behaviour, $sv_hover_images;
 
 	/* no need to include fading code if it is not enabled */
-	if ("neither" != $sv_hover_options{fade})
+	if ("neither" != $sv_hover_options{'fade'})
 		$fade .=
-			"  ,'fade', '".$sv_hover_options{fade}."', ".
-			"  'fadeMax', ".$sv_hover_options{fademax};
+			"  ,'fade', '".$sv_hover_options{'fade'}."', ".
+			"  'fadeMax', ".$sv_hover_options{'fademax'};
 	else
 		$fade = "";
 
@@ -270,9 +257,9 @@ function sv_hover_footer_js() {
 				"'trail', true ".$fade);
 	}
 
-	if ($sv_hover_options{replace}) {
+	if ($sv_hover_options{'replace'}) {
 		$line .= sprintf("hover_replaceTitlesByTags('%s', \"%s\");\n\n",
-			$sv_hover_options{replace},
+			$sv_hover_options{'replace'},
 			"'trail', true ".$fade);
 	}
 
@@ -345,10 +332,10 @@ function sv_hover_install () {
 }
 
 if (is_admin()) {
-	@include('inc/admin.php');
-
 	# we pull in xajax here since it won't work from inc/admin.php
 	require_once('xajax/xajax_core/xajax.inc.php');
+
+	@include('inc/admin.php');
 } else {
 	/* register head hook */
 	add_action('wp_head', 'sv_hover_header');

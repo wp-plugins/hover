@@ -54,7 +54,7 @@
 \begin_body
 
 \begin_layout Title
-Hover v0.7.2
+Hover v0.7.3
 \end_layout
 
 \begin_layout Author
@@ -101,7 +101,7 @@ Since software development is a highly dynamic process, documentation tends
 \end_layout
 
 \begin_layout Standard
-Right now this document is written for Hover version 0.7.2.
+Right now this document is written for Hover version 0.7.3.
 \end_layout
 
 \begin_layout Subsection
@@ -404,7 +404,7 @@ Extract Plugin:
 \end_layout
 
 \begin_layout Quotation
-$ tar -xvzf /tmp/hover-0.7.2.tar.gz
+$ tar -xvzf /tmp/hover-0.7.3.tar.gz
 \end_layout
 
 \begin_layout Standard
@@ -412,7 +412,7 @@ Rename folder:
 \end_layout
 
 \begin_layout Quotation
-$ mv hover-0.7.2 hover
+$ mv hover-0.7.3 hover
 \end_layout
 
 \begin_layout Standard

@@ -94,4 +94,13 @@ if (4 == $version) {
 	update_option('SV_HOVER', $sv_hover_options, "Hover's options", 'no');
 }
 
+if (5 == $version) {
+	$sv_hover_options = get_option('SV_HOVER');
+
+	unset($sv_hover_options{websnapr_link});
+	unset($sv_hover_options{websnapr_acronym});
+	$sv_hover_options{version} = 6;
+
+	update_option('SV_HOVER', $sv_hover_options, "Hover's options", 'no');
+}
 ?>
