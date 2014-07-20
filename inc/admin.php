@@ -1,5 +1,8 @@
 <?php
 
+@include('admin/qa.php');
+@include('admin/check.php');
+
 /* creates a yes/no dropdown item with the right value selected */
 function sv_boolean_dropdown($option, $text = "") {
 	global $sv_hover_options;
@@ -76,200 +79,6 @@ function sv_hover_option_to_input($desc, $option, $size = 20) {
 		$size);
 }
 
-function sv_hover_qa_make_list($list) {
-	global $sv_hover_qa_id;
-
-	$sv_hover_qa_id += 1;
-	$id = "qa".$sv_hover_qa_id;
-?>
- <div class="qa">
-  <p onclick="sv_hover_show('<?php echo $id?>')" class="ajax">
-  Questions &amp; Answers</p>
-  <ol class="visible" id="<?php echo $id?>">
-<?php
-
-	for ($i =0; $i <count($list); $i += 2)
-		printf(
-'<li>
-  <ul>
-   <li class="question">%s</li>
-   <li class="answer">%s</li>
-  </ul>
- </li>'."\n", $list[$i], $list[$i+1]);
-
-?>
-  </ol>
- </div>
- <script type="text/javascript">
-  sv_hover_hide('<?php echo $id?>');
- </script>
-<?php
-}
-
-function sv_hover_qa_websnapr() {
-	sv_hover_qa_make_list(array(
-"This does not seem to work",
-"Websnapr support has been disabled in 0.7.0, since you now need to register
-with their site."
-	));
-}
-
-function sv_hover_qa_titles() {
-	sv_hover_qa_make_list(array(
-"How do I disable this feature?",
-"Delete the content of the input field.",
-
-"What are sensible tags?",
-"At the moment I am using: 'img,span,a'.",
-
-"It is not working!",
-'Be sure to seperate each tag with a comma and do NOT include whitespaces:
-<br/><br/>
-<table>
-<tr><td align="right" class="bad">BAD</td><td class="pre">img span a</td></tr>
-<tr><td align="right" class="bad">BAD</td><td class="pre">img, span, a</td></tr>
-<tr><td align="right" class="good">GOOD</td><td class="pre">img,span,a</td></tr>
-</table>'
-	));
-}
-
-function sv_hover_qa_links() {
-	sv_hover_qa_make_list(array(
-"Where does the link for acronyms come from?",
-"From the 'link' input field.",
-
-"How can I disable this feature for a specific acronym?",
-"Leave the link field empty."
-	));
-}
-
-function sv_hover_qa_check() {
-	sv_hover_qa_make_list(array(
-"How do I run the checks?",
-"Simply click on 'run checks' above. The tests will then be run through AJAX on
-demand to save CPU and bandwidth. Find below a short explanation of each check.",
-
-"Versions",
-"These are some internal versioning information. Please include them in every
-BUG report.",
-
-"Known Problems",
-"This is a list of known problems with links to their ticket numbers",
-
-"Javascript",
-"These checks test the availability of all needed javascript files. Access is
-tested via HTTP, thus resembling the behaviour of a normal browser. Errors here
-mostly indicate a wrong setting in 'Paths'.",
-
-"Config",
-"An overview of all of Hover's settings including their value. Please include
-them in every BUG report.",
-
-"*_hover/*_hover_images",
-"These are the current database schemata."
-));
-}
-
-function sv_hover_qa_images() {
-	sv_hover_qa_make_list(array(
-"What data do I need to enter?",
-"Put the <i>absolut</i> path of your image into the <b>src</b> textarea and the
-text you'd want to popup into the <b>text</b> textare",
-
-"How is this different from including 'img' in the Switches option?",
-"The latter only takes the title attribute and displays it as a popup. With
-this, you can define the title attribute once, and it will be used for every
-occurance of that image on your blog.",
-
-"This overwrites title attributes I set with the WYSIWYG editor",
-"Yes, that would be a feature.",
-
-"Image popups are not working properly, only a browser based popup is shown",
-"Make sure you have 'img' (without the quotes) included in the <i>Titles</i>
-setting"
-));
-
-}
-
-function sv_hover_qa_maxreplace() {
-	sv_hover_qa_make_list(array(
-"I am not sure I understand what this option actually does?",
-"With maxreplace you are able to limit the number of times a specific hover is
-created. For example if you define an acronym Hover for 'FTP' and use this in
-your posting 'FTP is a simple protocol. FTP may use two Ports.' and a maxreplace
-limit of 1 for acronyms only the first occurance of FTP will be decorated with a
-popup.",
-
-"I used a maxreplace of 1, but still more than one Hover is created for the same
-term?",
-"Due to technical limitations maxreplace can only be applied to certain blocks
-of your content. On your Frontpage maxreplace limitation only works per posting,
-thus a Hover found in two postings will be replaced one time per posting.",
-
-"I want to replace all occurances!",
-"Just enter a value of -1.",
-
-"I entered 0 and no hovers are created?!",
-"Hover did just as it was told and replaced 0 occurances (see previous Q&amp;A)."
-));
-
-}
-
-function sv_hover_qa_maintenance() {
-	sv_hover_qa_make_list(array(
-"What does 'delete options' do?",
-"This will delete all options for hover. Your links, etc will not be touched,
-but everything else will be unset. You will need to deactivate/activate hover,
-before it will work again",
-
-"What does 'Drop Hover Table' do?",
-"This will DELETE all your configured hovers. No recovery possible.",
-
-"What does 'Drop Hover Images Table' do?",
-"This will DELETE all your configured images. No recovery possible.",
-));
-
-}
-
-function sv_hover_qa_interface() {
-	sv_hover_qa_make_list(array(
-"What are these settings for?",
-"You can alter the size of all textfields used to configure hovers. This
-enables you to adapt it to your screen size. Changing these settings does not
-alter your blog, only this configuration page.",
-
-"What format are these settings in?",
-"It is <i>Width</i><b>x</b><i>Height</i>. To set a size of 3 rows and
-20 columns use (without the quotes): '20x3'",
-
-"Setting height to 1 still results in a textbox two lines high?",
-"That would be a feature."
-));
-}
-
-function sv_hover_qa_switches() {
-	sv_hover_qa_make_list(array(
-"Use internal css:",
-"Hover comes with it's preconfigured CSS file defining the needed classes."
-	." You can disable the inclusion of this file e.g. if you'd like"
-	." to define your one style.",
-
-"Use javascript:",
-"You can disable the use of javascript alltogether with the downside of"
-	." losing some features like popups and title replacement. ",
-
-"Use file:",
-"Through activating this option Hover will create a file containing all needed
-javascript in your uploads directory and include this into your blog via link.
-This will save CPU cycles (only create needed code once) and bandwidth (clients
-and proxies can cache this file).",
-
-"Open in new Window:",
-"Opens links in a new window"
-));
-
-}
-
 function sv_hover_panel_head() {
 	global $xajax;
 
@@ -332,26 +141,23 @@ function sv_hover_update_options() {
 	global $sv_hover_options;
 
 	$sv_hover_options = array (
-		usecss => $_POST['usecss'],
-		usejs => $_POST['usejs'],
-		usefile => $_POST['usefile'],
-		blank => $_POST['blank'],
+		'usecss' => $_POST['usecss'],
+		'usejs' => $_POST['usejs'],
+		'usefile' => $_POST['usefile'],
+		'blank' => $_POST['blank'],
 
-		size_search => $_POST['size_search'],
-		size_link => $_POST['size_link'],
-		size_desc => $_POST['size_desc'],
+		'size_search' => $_POST['size_search'],
+		'size_link' => $_POST['size_link'],
+		'size_desc' => $_POST['size_desc'],
 
-		fade => $_POST['fade'],
-		fademax => $_POST['fademax'],
+		'fade' => $_POST['fade'],
+		'fademax' => $_POST['fademax'],
 
-		replace => $_POST['replace'],
+		'replace' => $_POST['replace'],
 
-		websnapr_link => $_POST['websnapr_link'],
-		websnapr_acronym => $_POST['websnapr_acronym'],
-
-		maxreplace_abbr => $_POST['maxreplace_abbr'],
-		maxreplace_acronym => $_POST['maxreplace_acronym'],
-		maxreplace_link => $_POST['maxreplace_link'],
+		'maxreplace_abbr' => $_POST['maxreplace_abbr'],
+		'maxreplace_acronym' => $_POST['maxreplace_acronym'],
+		'maxreplace_link' => $_POST['maxreplace_link'],
 	);
 
 	update_option('SV_HOVER', $sv_hover_options);
@@ -402,6 +208,10 @@ function sv_hover_new_image() {
 function sv_hover_update_hovers() {
 	global $wpdb;
 
+	if ($_POST['complete'] != "e96621d9-f72a-4772-aa8b-f16aa3b49f32") {
+		wp_die('ERROR: Partial Form content. <pre>'.var_export($_POST, true).'</pre>');
+	}
+
 	/* walk through fields, delete empty ones, alter others. We need to
 	 * update all existing links, since there is no way to know if
 	 * something has changed or not */
@@ -450,7 +260,7 @@ function sv_hover_update_images() {
 function sv_hover_handle_file() {
 	global $sv_hover_options;
 
-	if ($sv_hover_options{usefile})
+	if ($sv_hover_options{'usefile'})
 	{
 		sv_hover_create_data();
 		sv_hoover_footer_js_writefile();
@@ -528,173 +338,6 @@ function sv_fieldset_start($name) {
 
 function sv_fieldset_end() {
 	printf('</fieldset>'."\n");
-}
-
-function sv_hover_check_url($url) {
-
-	require_once( ABSPATH . 'wp-includes/class-snoopy.php');
-
-	$snoopy = New Snoopy;
-	$snoopy->fetch($url);
-
-	list($version, $code, $text) = split(' ', $snoopy->response_code);
-
-	if (200 != $code) {
-		$ret  = "<p class=bad>ERROR: $snoopy->response_code</p>";
-		$ret .= "<p><b>Url</b>:<pre>".$url."</pre></p>";
-		$ret .= "<p><b>Response</b>:<pre>".
-			join("", $snoopy->headers)."</pre></p>";
-	} else
-		$ret = "OK";
-
-	return $ret;
-}
-
-function sv_hover_check_javascript() {
-	global $sv_hover_options;
-
-	$files = array(
-		"behaviour.js" => HOVER_BEHAVIOUR_URL,
-		"domTT.js" => HOVER_DOMTT_URL,
-		"domLib.js" => HOVER_DOMTT_URL,
-		"fadomatic.js" => HOVER_DOMTT_URL,
-		"hover.js" => HOVER_JS_URL
-	);
-
-	$checks = array();
-
-	foreach (array_keys($files) as $f) {
-		$checks{$f} = sv_hover_check_url($files{$f}.'/'.$f);
-	}
-
-	# this is kind of evil since we first perform the check and then
-	# hide the error if USEFILE is disabled.
-	if ( !$sv_hover_options{'usefile'} ) {
-		$checks{$f} = "disabled";
-	}
-
-	return $checks;
-}
-
-function sv_hover_check_upload_url() {
-	global $wpdb, $sv_hover_options;
-
-	if ($sv_hover_options{'usefile'})
-		$check["usefile"] = "True, the following checks apply to you.";
-	else
-		$check["usefile"] = "False, you can ignore the following checks and possible warning messages";
-
-	if (substr(get_option('upload_path'),0 , 1) == "/") {
-		$check["upload_path"] = "Is an absolute path, checking for upload_url_path";
-		if (get_option('upload_url_path')) {
-			$check["upload_url_path"] = "Is set, good.";
-		} else {
-			$check["upload_url_path"] = "Is unset, <span class=bad>BAD</span>. YOU WILL NEED TO CONFIGURE THIS OR USE A RELATIVE PATH FOR upload_url. Hover wil fail to work if you don't.";
-		}
-	} else {
-		$check["upload_path"] = "Is an relative path, good. Skiping unneeded tests";
-	}
-
-	return $check;
-}
-
-function sv_hover_check_database($name) {
-	global $wpdb;
-
-	if ($wpdb->get_var("show tables like '$name'") != $name) {
-		$db['ERROR'] = "Table $name missing?!";
-		return $db;
-	}
-
-	$describe = $wpdb->get_results("DESCRIBE $name");
-
-	foreach($describe as $d)
-		$db[$d->Field] = $d->Type;
-
-	return $db;
-}
-
-function sv_hover_check_upgrade() {
-	global $wpdb;
-
-	if ($wpdb->get_var("show tables like '".HOVER_TABLE."'") != HOVER_TABLE) {
-		$db['ERROR'] = "Table ".HOVER_TABLE." missing?!";
-		return $db;
-	}
-
-	$colons = $wpdb->get_results(
-		"SELECT search".
-		" FROM ".HOVER_TABLE." WHERE search LIKE ':%:'"
-		);
-
-	$db = array();
-	foreach ($colons as $c) {
-		$db["Colons ".$c->search] = "Found, please remove training colon";
-	}
-
-	if (!is_array($db)) {
-		$db["Colons"] = "No trailing colons found, good";
-	}
-
-	return $db;
-}
-
-function sv_hover_check_ticket($id, $reason) {
-	return sprintf('<a href="%s/%s">Ticket #%s</a> %s',
-		'https://bc-bd.org/trac/hover/ticket',
-		$id, $id, $reason);
-}
-
-function sv_hover_check() {
-	global $sv_hover_options;
-
-	@include('sql.php');
-
-	$common = array(
-		"HOVER_BASE" => HOVER_BASE,
-		"HOVER_BEHAVIOUR_URL" => HOVER_BEHAVIOUR_URL,
-		"HOVER_DOMTT_URL" => HOVER_DOMTT_URL,
-		"HOVER_JS_FILE" => HOVER_JS_FILE,
-		"HOVER_JS_URL" => HOVER_JS_URL,
-		"wpurl" => get_bloginfo('wpurl'),
-		"url" => get_bloginfo('url'),
-		"upload_path" => get_option('upload_path'),
-		"upload_url_path" => get_option('upload_url_path')
-	);
-
-	$table = array(
-		"DB" => $sv_hover_options{'version'},
-		"Version" => '0.7.2',
-		"Commit" => '92378f8f9ea108f263bbe6f21bf779ac8eb2a528'
-	);
-
-	$line = sv_hover_draw_table("Versions", $table);
-
-	$javascript = sv_hover_check_javascript();
-	$line .= sv_hover_draw_table("Javascript", $javascript);
-
-	$options['TABLE'] = HOVER_TABLE;
-	$options['IMAGES'] = HOVER_IMAGES;
-
-	$line .= sv_hover_draw_table("Options", $sv_hover_options);
-
-	$line .= sv_hover_draw_table("Common", $common);
-
-	$url = sv_hover_check_upload_url();
-	$line .= sv_hover_draw_table("Upload Checks", $url);
-
-	foreach ($ddl as $name => $sql) {
-		$db = sv_hover_check_database($name);
-		$line .= sv_hover_draw_table($name, $db);
-	}
-
-	$db = sv_hover_check_upgrade();
-	$line .= sv_hover_draw_table("Upgrade", $db);
-
-	$response = new xajaxResponse();
-	$response->assign("check", "innerHTML", $line);
-
-	return $response;
 }
 
 function sv_hover_maintenance_options() {
@@ -945,7 +588,7 @@ function sv_hover_panel () {
 	sv_fieldset_end();
 	echo(HOVER_SUBMIT);
 ?>
-
+		<input type="hidden" name="complete" value="e96621d9-f72a-4772-aa8b-f16aa3b49f32"/>
 		</form>
 
 <?php sv_fieldset_start("Check"); ?>
@@ -962,8 +605,6 @@ function sv_hover_panel () {
 	sv_hover_qa_check();
 	sv_fieldset_end();
 ?>
-		</form>
-
 	</div>
 
 <?php
@@ -1009,7 +650,7 @@ function sv_hover_die($text, $error = "none") {
 }
 
 add_option('SV_HOVER', array(
-	version => 5,
+	version => 6,
 
 	usecss => 1,
 	usejs => 1,
@@ -1024,9 +665,6 @@ add_option('SV_HOVER', array(
 	fademax => 100,
 
 	replace => 'img,span,a',
-
-	websnapr_link => 1,
-	websnapr_acronym => 1,
 
 	maxreplace_abbr => -1,
 	maxreplace_acronym => -1,
