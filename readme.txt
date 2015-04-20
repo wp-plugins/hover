@@ -5,6 +5,10 @@ Requires at least: 3.0.0
 Tested up to: 3.6.1
 Stable tag: hover-0.7.3
 
+
+Hover Is Looking for You! I moved to Octopress and am no longer actively
+developing Hover. If you want to take over, contact me by email.
+
 Hover is a WordPress plugin that replaces keywords with links and an optional popup
 
 == Description ==
